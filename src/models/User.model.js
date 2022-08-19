@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const CONFIG = require("../../config/config");
+const Schema = mongoose.Schema;
 
 const UserSchema = new mongoose.Schema(
   {
@@ -21,21 +22,21 @@ const UserSchema = new mongoose.Schema(
       type: String,
       // required: true
     },
-    region: {
+    phone: {
       type: String,
       // required: true
     },
-    mobile_phone: {
-      type: String,
-      // required: true
-    },
-    birth_date: {
+    birthday: {
       type: Date,
-      // default: Date.now
+      default: null
     },
-    avatarURL: {
+    userImgUrl: {
       type: String
     },
+    userPets: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Pet'
+    }]
   },
   {
     timestamps: true

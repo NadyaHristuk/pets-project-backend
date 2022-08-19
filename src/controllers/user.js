@@ -6,27 +6,18 @@ const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 
 const User = require("../models/User.model.js");
-const UserFinance = require("../models/UserFinance.model");
+
 
 // Get User data by Id
-module.exports.getUser = (req, res) => {
-  res.status(200).json({
-    id: req.user.id,
-    email: req.user.email
-  });
-};
-
-// Logout User
-module.exports.userLogout = (req, res) => {
-  req.logout();
-  res.status(200).json({
-    message: "User successfully logout"
-  });
+module.exports.userInfo = (req, res) => {
+  const {name, email, birthday, phone, city, userImgUrl, userPets} = req.user;
+  res.status(200).json(
+    {name, email, birthday, phone, city, userImgUrl, userPets}
+);
 };
 
 // Register New User and Check this email have in DB
 module.exports.userRegister = (req, res) => {
-  console.log("first");
   const { name, email, password } = req.body;
   const error = [];
 
@@ -57,19 +48,7 @@ module.exports.userRegister = (req, res) => {
           email: req.body.email,
           name: req.body.name,
           password: req.body.password
-        });
-
-        if (req.body.first) {
-          newUser.first = req.body.first;
-        }
-
-        if (req.body.last) {
-          newUser.last = req.body.last;
-        }
-
-        if (req.body.profileImage) {
-          newUser.first = req.body.profileImage;
-        }
+        });       
 
         // newUser.financeId =
         // Attempt to save the user
@@ -89,8 +68,6 @@ module.exports.userRegister = (req, res) => {
             }
 
             const token = jwt.sign( userData, config.jwt_encryption);
-
-            
           });
         });
 
@@ -100,12 +77,10 @@ module.exports.userRegister = (req, res) => {
           name: user.name,
           createdAt: user.createdAt
         };
-
-   
+        
         res.status(200).json({
           success: true,
-          message:
-            "Successfully created new user. You can Login",        
+          message: "Successfully created new user. You can Login",
           user: userData
         });
       }
@@ -114,9 +89,9 @@ module.exports.userRegister = (req, res) => {
 };
 
 // Update User data
-module.exports.updateUser = (req, res) => {
-  const user = req.body;
-  const id = req.params.id;
+module.exports.useUpdate = (req, res) => {
+  const updateData = req.body;
+  const id = req.user._id;
 
   const sendError = () => {
     res.status(400);
@@ -141,9 +116,9 @@ module.exports.updateUser = (req, res) => {
     {
       _id: id
     },
-    user,
+    updateData,   
     {
-      new: true
+      new: true,
     }
   )
     .then(sendResponse)
@@ -187,39 +162,12 @@ module.exports.userLogin = (req, res) => {
 };
 
 
-module.exports.userInfo = (req, res) => {
-  passport.authenticate(
-    "local",
-    {
-      session: false
-    },
-    (err, user, info) => {
-      if (err || !user) {
-        return res.status(400).json({
-          message: info ? info.message : "Login failed",
-          user: user
-        });
-      }
-
-      req.login(
-        user,
-        {
-          session: false
-        },
-        err => {
-          if (err) {
-            res.status(301).json({ err });
-          }
-
-          const token = jwt.sign(user, config.jwt_encryption);
-          return res.json({
-            user,
-            token
-          });
-        }
-      );
-    }
-  )(req, res);
+// Logout User
+module.exports.userLogout = (req, res) => {
+  req.logout();
+  res.status(200).json({
+    message: "User successfully logout"
+  });
 };
 
 // Reset password user from user have email with link url/:token

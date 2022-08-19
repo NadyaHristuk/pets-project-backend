@@ -163,7 +163,9 @@ router.post("/user/register", UserController.userRegister);
 //  *                  example: false
 //  */
 router.post("/user/login", UserController.userLogin);
-router.post("/user/info", passportCheck, UserController.userInfo);
+router.get("/user/info", passportCheck, UserController.userInfo);
+router.put("/user/update", passportCheck, UserController.useUpdate);
+router.get("/user/info", passportCheck, UserController.userInfo);
 // Routes Must have checked function of JWT exp
 // /**
 //  * @swagger

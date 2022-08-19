@@ -13,18 +13,18 @@ const PetSchema = new mongoose.Schema(
     },
     birth_date: {
       type: Date,
-      default: Date.now
+      required: true
     },
     breed: {
-      type: String
-      // required: true
+      type: String,
+      required: true
     },
     avatarURL: {
       type: String
     },
     comments: {
-      type: String
-      // required: true
+      type: String,
+      required: true
     }
   },
   {
