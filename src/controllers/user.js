@@ -26,6 +26,7 @@ module.exports.userLogout = (req, res) => {
 
 // Register New User and Check this email have in DB
 module.exports.userRegister = (req, res) => {
+  console.log("first");
   const { name, email, password } = req.body;
   const error = [];
 
@@ -87,22 +88,25 @@ module.exports.userRegister = (req, res) => {
               });
             }
 
-            const userData = {
-              id: String(user._id),
-              email: user.email,
-              name: user.name,
-              createdAt: user.createdAt
-            };
             const token = jwt.sign( userData, config.jwt_encryption);
 
-            res.status(200).json({
-              success: true,
-              message:
-                "Successfully created new user and his Finance Data. You can Login",
-              token: token,
-              user: userData
-            });
+            
           });
+        });
+
+        const userData = {
+          id: String(user._id),
+          email: user.email,
+          name: user.name,
+          createdAt: user.createdAt
+        };
+
+   
+        res.status(200).json({
+          success: true,
+          message:
+            "Successfully created new user. You can Login",        
+          user: userData
         });
       }
     });
@@ -148,6 +152,42 @@ module.exports.updateUser = (req, res) => {
 
 // Login User and get him Token for access to some route action
 module.exports.userLogin = (req, res) => {
+  passport.authenticate(
+    "local",
+    {
+      session: false
+    },
+    (err, user, info) => {
+      if (err || !user) {
+        return res.status(400).json({
+          message: info ? info.message : "Login failed",
+          user: user
+        });
+      }
+
+      req.login(
+        user,
+        {
+          session: false
+        },
+        err => {
+          if (err) {
+            res.status(301).json({ err });
+          }
+
+          const token = jwt.sign(user, config.jwt_encryption);
+          return res.json({
+            user,
+            token
+          });
+        }
+      );
+    }
+  )(req, res);
+};
+
+
+module.exports.userInfo = (req, res) => {
   passport.authenticate(
     "local",
     {

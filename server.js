@@ -2,7 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const passport = require("passport");
 const flash = require("connect-flash");
-// const session = require("express-session");
+const session = require("express-session");
 const morgan = require("morgan");
 
 // const swaggerDoc = require("./src/swagger/");
@@ -17,11 +17,7 @@ const dbUrl = require("./config/config").MondoDB.url;
 
 // Connect to MongoDB
 mongoose
-  .connect(dbUrl, {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useFindAndModify: false
-  })
+  .connect(dbUrl)
   .then(() => console.log("MongoDB Connected"))
   .catch(err => console.log(err));
 
@@ -35,13 +31,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Express session
-// app.use(
-//   session({
-//     secret: "secret cat",
-//     resave: false,
-//     saveUninitialized: true
-//   })
-// );
+app.use(
+  session({
+    secret: "secret cat",
+    resave: false,
+    saveUninitialized: true
+  })
+);
 
 // Passport middleware
 app.use(passport.initialize());

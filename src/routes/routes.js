@@ -110,7 +110,7 @@ if (process.env.NODE_ENV === "production") {
 //  *                  type: string
 //  *                  example: "some error written here"
 //  */
-router.post("user/register", UserController.userRegister);
+router.post("/user/register", UserController.userRegister);
 
 // // Login
 // /**
@@ -162,8 +162,8 @@ router.post("user/register", UserController.userRegister);
 //  *                  type: boolean
 //  *                  example: false
 //  */
-router.post("user/login", UserController.userLogin);
-
+router.post("/user/login", UserController.userLogin);
+router.post("/user/info", passportCheck, UserController.userInfo);
 // Routes Must have checked function of JWT exp
 // /**
 //  * @swagger

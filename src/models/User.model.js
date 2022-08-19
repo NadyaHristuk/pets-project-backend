@@ -19,23 +19,23 @@ const UserSchema = new mongoose.Schema(
     },
     city: {
       type: String,
-      required: true
+      // required: true
     },
     region: {
       type: String,
-      required: true
+      // required: true
     },
     mobile_phone: {
       type: String,
-      required: true
+      // required: true
     },
     birth_date: {
       type: Date,
-      default: Date.now
+      // default: Date.now
     },
     avatarURL: {
       type: String
-    }
+    },
   },
   {
     timestamps: true

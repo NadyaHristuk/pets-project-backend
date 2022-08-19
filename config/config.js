@@ -1,7 +1,7 @@
 module.exports = {
   MondoDB: {
     url:
-      "mongodb+srv://user:123@cluster0.jkmtu.mongodb.net/pets_support??retryWrites=true&w=majority"
+      "mongodb+srv://user:123@cluster0.jkmtu.mongodb.net/pets_support?retryWrites=true&w=majority"
   },
   client: {
     development: {
