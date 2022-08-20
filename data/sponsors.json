@@ -3,6 +3,7 @@
     "title": "Притулок для бездомних тварин 'Сіріус'",
     "url": "https://dogcat.com.ua",
     "addressUrl": "https://goo.gl/maps/iq8NXEUf31EAQCzc6",
+    "imageUrl": "https://project-pets-api.herokuapp.com/data/img_our_friend/frame 287.png",
     "address": "Fedorivka, Kyiv Oblast, Ukraine, 07372",
     "workDays": [
       { "isOpen": false },
