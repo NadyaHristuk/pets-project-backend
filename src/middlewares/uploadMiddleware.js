@@ -3,7 +3,7 @@ const { v4: uuidv4 } = require("uuid");
 const multer = require("multer");
 
 const uploadDir = path.resolve("./tmp");
-const downloadDir = path.resolve("./public/avatars");
+const downloadDir = path.resolve("./data/avatars");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
