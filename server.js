@@ -23,10 +23,10 @@ mongoose
 
 // Logger - see connection in/out
 app.use(morgan("dev"));
-
 // Express json parse
 app.use(express.json());
 
+app.use(express.static("data"));
 // Express body parser
 app.use(express.urlencoded({ extended: true }));
 
