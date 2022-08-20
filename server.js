@@ -4,6 +4,7 @@ const passport = require("passport");
 const flash = require("connect-flash");
 const session = require("express-session");
 const morgan = require("morgan");
+const path = require("path");
 
 // const swaggerDoc = require("./src/swagger/");
 const routes = require("./src/routes/routes");
@@ -26,7 +27,7 @@ app.use(morgan("dev"));
 // Express json parse
 app.use(express.json());
 
-app.use(express.static("data"));
+app.use("/data", express.static("data"));
 // Express body parser
 app.use(express.urlencoded({ extended: true }));
 
