@@ -1,20 +1,24 @@
-const path = require("path");
-const { v4: uuidv4 } = require("uuid");
+
+
+const cloudinary = require("cloudinary").v2;
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const multer = require("multer");
 
-const uploadDir = path.resolve("./tmp");
-const downloadDir = path.resolve("./data/avatars");
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    const [, extension] = file.originalname.split(".");
-    cb(null, `${uuidv4()}.${extension}`);
-  },
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_NAME,
+  api_key: process.env.CLOUDINARY_KEY,
+  api_secret: process.env.CLOUDINARY_SECRET
 });
 
-const uploadMiddleware = multer({ storage });
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  folder: "avatars",
+  allowedFormats: ["jpg", "png"],
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  }
+});
 
-module.exports = { uploadMiddleware, uploadDir, downloadDir };
+const uploadCloud = multer({ storage });
+
+module.exports = uploadCloud;

@@ -6,6 +6,8 @@ const session = require("express-session");
 const morgan = require("morgan");
 const path = require("path");
 
+require("dotenv").config();
+
 // const swaggerDoc = require("./src/swagger/");
 const routes = require("./src/routes/routes");
 const app = express();

@@ -5,6 +5,7 @@ const async = require("async");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 
+
 const User = require("../models/User.model.js");
 
 
@@ -112,7 +113,17 @@ module.exports.useUpdate = (req, res) => {
     });
   };
 
-  User.findOneAndUpdate(
+ if(req.file.path ){
+       User.findByIdAndUpdate(
+        id,
+        { userImgUrl: req.file.path },
+        { new: true }
+      ).then(result => {
+        res.json(result);
+      });
+    }
+  else 
+  {User.findOneAndUpdate(
     {
       _id: id
     },
@@ -123,6 +134,7 @@ module.exports.useUpdate = (req, res) => {
   )
     .then(sendResponse)
     .catch(sendError);
+  }
 };
 
 // Login User and get him Token for access to some route action

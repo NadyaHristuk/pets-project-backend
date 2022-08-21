@@ -10,6 +10,7 @@ const UserController = require("../controllers/user");
 // const UserFinance = require("../controllers/userFinance.js");
 const NewsController = require("../controllers/news");
 const SponsorsController = require("../controllers/sponsor.js");
+const uploadCloud = require("../middlewares/uploadMiddleware");
 
 
 const passportCheck = (req, res, next) =>
@@ -164,7 +165,7 @@ router.post("/user/register", UserController.userRegister);
 //  */
 router.post("/user/login", UserController.userLogin);
 router.get("/user/info", passportCheck, UserController.userInfo);
-router.put("/user/update", passportCheck, UserController.useUpdate);
+router.put("/user/update", passportCheck, uploadCloud.single("avatar"), UserController.useUpdate);
 router.get("/user/info", passportCheck, UserController.userInfo);
 // Routes Must have checked function of JWT exp
 // /**
