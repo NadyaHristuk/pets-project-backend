@@ -15,11 +15,31 @@ module.exports.noticeCategory = (req, res) => {
     res.status(200).json({
       success: true,
       message: "Data found with this ID",
-      finance: doc
+      notice:doc
      
     });
   });
 };
+
+module.exports.noticeOfUser = (req, res) => { 
+	const owner = req.user._id;
+  Notice.find({owner}).then(doc => {
+    if (!doc) {
+      res.status(400).json({
+        success: false,
+        message: "Not found finance data with this user ID"
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Data found with this ID",
+      notice:doc
+     
+    });
+  });
+};
+
 
 module.exports.noticeCreate = async (req, res) => {
 	const owner = req.user._id;
@@ -46,9 +66,11 @@ module.exports.noticeCreate = async (req, res) => {
 };
 
 module.exports.noticeDelete = (req, res) => {
+  console.log("tut");
   const owner = req.user._id;
 
-  Notice.findByIdAndRemove(req.params.i).then(doc => {
+  Notice.findByIdAndRemove(req.params.id).then(doc => {
+    console.log("tut")
     if (!doc) {
       res.status(400).json({
         success: false,
@@ -58,7 +80,7 @@ module.exports.noticeDelete = (req, res) => {
       User.findByIdAndUpdate(owner, { $pull: { "userNotices":  req.params.id } })
 					.then(user => {
 						if (user) {
-							res.status(201).json({success: true, pet});
+							res.status(201).json({success: true, notice:doc});
 						}
 					})
 					.catch(err => {
