@@ -46,14 +46,11 @@ module.exports.petDelete = (req, res) => {
 					});
     }
 
-
-    
-
     res.status(200).json({
       success: true,
-      message: "Data found with this ID",
-      finance: doc,
-      user: { name: req.user.name, email: req.user.email }
+      message: "Data delete with this ID",
+      pet: doc,
+     
     });
   });
 };

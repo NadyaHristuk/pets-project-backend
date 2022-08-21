@@ -20,6 +20,7 @@ module.exports.userInfo = async (req, res) => {
 
 // Register New User and Check this email have in DB
 module.exports.userRegister = (req, res) => {
+  const userData = req.body;
   const { name, email, password } = req.body;
   const error = [];
 
@@ -47,9 +48,7 @@ module.exports.userRegister = (req, res) => {
         });
       } else {
         const newUser = new User({
-          email: req.body.email,
-          name: req.body.name,
-          password: req.body.password
+         ...userData
         });       
 
         newUser.save().then(user => {             
