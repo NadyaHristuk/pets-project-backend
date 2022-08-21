@@ -3,6 +3,8 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const CONFIG = require("../../config/config");
 const Schema = mongoose.Schema;
+const Notice = require("../models/Notice.model");
+const Pet = require("../models/Pet.model");
 
 const UserSchema = new mongoose.Schema(
   {

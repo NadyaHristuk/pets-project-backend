@@ -34,7 +34,7 @@ const NoticeSchema = new mongoose.Schema(
       required: true
     },
     category: {
-      type: Schema.Types.ObjectId,
+      type: String,
       ref: "User",
       required: true,
     enum: ["Lost/Found", "Give to good hands", "Sell"],

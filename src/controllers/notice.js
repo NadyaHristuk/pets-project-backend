@@ -21,18 +21,18 @@ module.exports.noticeCategory = (req, res) => {
   });
 };
 
-module.exports.petRegister = async (req, res) => {
-	const owner = req.user.id;
-	const petData = req.body;
+module.exports.noticeCreate = async (req, res) => {
+	const owner = req.user._id;
+	const noticeData = req.body;
 
 
-	Pet.create({ avatarURL: req.file.path, owner, ...petData})
-		.then(pet => {
-			if (pet) {
-				User.findByIdAndUpdate(owner, {$push: {userPets: pet._id}})
+	Notice.create({ animals_photos: req.file.path, owner, ...noticeData})
+		.then(notice => {
+			if (notice) {
+				User.findByIdAndUpdate(owner, {$push: {userNotices: notice._id}})
 					.then(user => {
 						if (user) {
-							res.status(201).json({success: true, pet});
+							res.status(201).json({success: true, notice});
 						}
 					})
 					.catch(err => {
@@ -45,17 +45,17 @@ module.exports.petRegister = async (req, res) => {
 		);
 };
 
-module.exports.petDelete = (req, res) => {
+module.exports.noticeDelete = (req, res) => {
   const owner = req.user._id;
 
-  Pet.findByIdAndRemove(req.params.i).then(doc => {
+  Notice.findByIdAndRemove(req.params.i).then(doc => {
     if (!doc) {
       res.status(400).json({
         success: false,
-        message: "Not found finance data with this ID"
+        message: "Not found notice with this ID"
       });
     } else {
-      User.findByIdAndUpdate(owner, { $pull: { "userPets" :  req.params.id } })
+      User.findByIdAndUpdate(owner, { $pull: { "userNotices" :  req.params.id } })
 					.then(user => {
 						if (user) {
 							res.status(201).json({success: true, pet});
@@ -66,14 +66,11 @@ module.exports.petDelete = (req, res) => {
 					});
     }
 
-
-    
-
     res.status(200).json({
       success: true,
       message: "Data found with this ID",
-      finance: doc,
-      user: { name: req.user.name, email: req.user.email }
+     notice: doc,
+      
     });
   });
 };

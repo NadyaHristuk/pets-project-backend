@@ -12,7 +12,7 @@ const User = require("../models/User.model.js");
 // Get User data by Id
 module.exports.userInfo = async (req, res) => {
   const _id = req.user;
-  const user = await User.findById(_id).populate("pet").lean();
+  const user = await User.findById(_id).populate('userNotices').populate('userPets');
   res.status(200).json(
     user
 );
@@ -52,15 +52,14 @@ module.exports.userRegister = (req, res) => {
           password: req.body.password
         });       
 
-        newUser.save().then(user => {  
-            const token = jwt.sign( userData, config.jwt_encryption);
+        newUser.save().then(user => {             
             const userData = {
               id: String(user._id),
               email: user.email,
               name: user.name,
               createdAt: user.createdAt
             };
-            
+            const token = jwt.sign( userData, config.jwt_encryption);
             res.status(200).json({
               success: true,
               message: "Successfully created new user. You can Login",

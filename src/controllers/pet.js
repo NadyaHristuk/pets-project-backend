@@ -28,11 +28,11 @@ module.exports.petRegister = async (req, res) => {
 module.exports.petDelete = (req, res) => {
   const owner = req.user._id;
 
-  Pet.findByIdAndRemove(req.params.i).then(doc => {
+  Pet.findByIdAndRemove(req.params.id).then(doc => {
     if (!doc) {
       res.status(400).json({
         success: false,
-        message: "Not found finance data with this ID"
+        message: "Not found pet with this ID"
       });
     } else {
       User.findByIdAndUpdate(owner, { $pull: { "userPets" :  req.params.id } })

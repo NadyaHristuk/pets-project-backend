@@ -174,6 +174,8 @@ router.post("/pet/register", passportCheck, uploadCloud.single("avatarURL"), Pet
 router.delete("/pet/delete/:id", passportCheck, PetController.petDelete);
 
 router.get("/notice/category", NoticeController.noticeCategory);
+router.post("/notice/", passportCheck, uploadCloud.single("animals_photos"), NoticeController.noticeCreate);
+
 // Routes Must have checked function of JWT exp
 // /**
 //  * @swagger
