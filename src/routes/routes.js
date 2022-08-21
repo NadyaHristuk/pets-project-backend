@@ -170,12 +170,12 @@ router.get("/user/info", passportCheck, UserController.userInfo);
 router.put("/user/update", passportCheck, uploadCloud.single("avatar"), UserController.userUpdate);
 router.get("/user/info", passportCheck, UserController.userInfo);
 
-router.post("/pet/register", passportCheck, uploadCloud.single("avatarURL"), PetController.petRegister);
-router.delete("/pet/delete/:id", passportCheck, PetController.petDelete);
+router.post("/pet", passportCheck, uploadCloud.single("avatarURL"), PetController.petRegister);
+router.delete("/pet/:id", passportCheck, PetController.petDelete);
 
 router.get("/notice/category", NoticeController.noticeCategory);
-router.post("/notice/", passportCheck, uploadCloud.single("animals_photos"), NoticeController.noticeCreate);
-
+router.post("/notice", passportCheck, uploadCloud.single("animals_photos"), NoticeController.noticeCreate);
+router.delete("/notice/:id", passportCheck, NoticeController.noticeDelete);
 // Routes Must have checked function of JWT exp
 // /**
 //  * @swagger

@@ -55,7 +55,7 @@ module.exports.noticeDelete = (req, res) => {
         message: "Not found notice with this ID"
       });
     } else {
-      User.findByIdAndUpdate(owner, { $pull: { "userNotices" :  req.params.id } })
+      User.findByIdAndUpdate(owner, { $pull: { "userNotices":  req.params.id } })
 					.then(user => {
 						if (user) {
 							res.status(201).json({success: true, pet});
