@@ -10,10 +10,11 @@ const User = require("../models/User.model.js");
 
 
 // Get User data by Id
-module.exports.userInfo = (req, res) => {
-  const {name, email, birthday, phone, city, userImgUrl, userPets} = req.user;
+module.exports.userInfo = async (req, res) => {
+  const _id = req.user;
+  const user = await User.findById(_id).populate("pet").lean();
   res.status(200).json(
-    {name, email, birthday, phone, city, userImgUrl, userPets}
+    user
 );
 };
 
@@ -36,8 +37,8 @@ module.exports.userRegister = (req, res) => {
       success: false,
       message: error
     });
-  } else {
-    User.findOne({ email: email }).then(user => {
+  } else {        
+ User.findOne({ email: email }).then(user => {
       if (user) {
         error.push({ message: "Email already exists" });
         res.status(400).json({
@@ -51,46 +52,29 @@ module.exports.userRegister = (req, res) => {
           password: req.body.password
         });       
 
-        // newUser.financeId =
-        // Attempt to save the user
-        newUser.save().then(user => {
-          const newUserFinance = new UserFinance({
-            userId: user._id,
-            totalBalance: 0,
-            typeTotalBalance: "+"
-          });
-
-          newUserFinance.save(err => {
-            if (err) {
-              res.status(400).json({
-                success: false,
-                err
-              });
-            }
-
+        newUser.save().then(user => {  
             const token = jwt.sign( userData, config.jwt_encryption);
+            const userData = {
+              id: String(user._id),
+              email: user.email,
+              name: user.name,
+              createdAt: user.createdAt
+            };
+            
+            res.status(200).json({
+              success: true,
+              message: "Successfully created new user. You can Login",
+              user: userData,
+              token
+            });
           });
-        });
-
-        const userData = {
-          id: String(user._id),
-          email: user.email,
-          name: user.name,
-          createdAt: user.createdAt
-        };
-        
-        res.status(200).json({
-          success: true,
-          message: "Successfully created new user. You can Login",
-          user: userData
-        });
+        } 
+      })      
       }
-    });
-  }
 };
 
 // Update User data
-module.exports.useUpdate = (req, res) => {
+module.exports.userUpdate = (req, res) => {
   const updateData = req.body;
   const id = req.user._id;
 
@@ -113,28 +97,14 @@ module.exports.useUpdate = (req, res) => {
     });
   };
 
- if(req.file.path ){
        User.findByIdAndUpdate(
         id,
-        { userImgUrl: req.file.path },
+        { userImgUrl: req.file.path, ...updateData },
         { new: true }
       ).then(result => {
-        res.json(result);
-      });
-    }
-  else 
-  {User.findOneAndUpdate(
-    {
-      _id: id
-    },
-    updateData,   
-    {
-      new: true,
-    }
-  )
-    .then(sendResponse)
-    .catch(sendError);
-  }
+        sendResponse(result);
+      });    
+  
 };
 
 // Login User and get him Token for access to some route action

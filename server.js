@@ -4,7 +4,6 @@ const passport = require("passport");
 const flash = require("connect-flash");
 const session = require("express-session");
 const morgan = require("morgan");
-const path = require("path");
 
 require("dotenv").config();
 
@@ -30,6 +29,9 @@ app.use(morgan("dev"));
 app.use(express.json());
 
 app.use("/data", express.static("data"));
+// newUser.financeId =
+// Attempt to save the user// newUser.financeId =
+// Attempt to save the user
 // Express body parser
 app.use(express.urlencoded({ extended: true }));
 
@@ -81,4 +83,3 @@ app.use("/", routes);
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, console.log(`Server started on port ${PORT}`));
-

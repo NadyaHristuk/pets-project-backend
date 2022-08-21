@@ -1,5 +1,25 @@
-const Pet = require("../models/Pet.model");
+const Notice = require("../models/Notice.model");
 const User = require("../models/User.model");
+
+
+module.exports.noticeCategory = (req, res) => { 
+
+  Notice.find().then(doc => {
+    if (!doc) {
+      res.status(400).json({
+        success: false,
+        message: "Not found finance data with this user ID"
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Data found with this ID",
+      finance: doc
+     
+    });
+  });
+};
 
 module.exports.petRegister = async (req, res) => {
 	const owner = req.user.id;

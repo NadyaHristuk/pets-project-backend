@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const PetSchema = new mongoose.Schema(
   {
-    userId: {
+    owner: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true
@@ -11,8 +11,8 @@ const PetSchema = new mongoose.Schema(
       type: String,
       required: true
     },
-    birth_date: {
-      type: Date,
+    birthdate: {
+      type: String,
       required: true
     },
     breed: {

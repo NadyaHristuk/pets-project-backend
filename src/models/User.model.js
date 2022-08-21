@@ -27,7 +27,7 @@ const UserSchema = new mongoose.Schema(
       // required: true
     },
     birthday: {
-      type: Date,
+      type: String,
       default: null
     },
     userImgUrl: {
@@ -35,7 +35,11 @@ const UserSchema = new mongoose.Schema(
     },
     userPets: [{
       type: Schema.Types.ObjectId,
-      ref: 'Pet'
+      ref: 'Pet',
+    }],
+    userNotices: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Notice',
     }]
   },
   {

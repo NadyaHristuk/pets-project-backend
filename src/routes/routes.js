@@ -7,6 +7,8 @@ const serverErrorHandler = require("../middleware/server-error");
 const config = require("../../config/config");
 
 const UserController = require("../controllers/user");
+const PetController = require("../controllers/pet");
+const NoticeController = require("../controllers/notice");
 // const UserFinance = require("../controllers/userFinance.js");
 const NewsController = require("../controllers/news");
 const SponsorsController = require("../controllers/sponsor.js");
@@ -165,8 +167,13 @@ router.post("/user/register", UserController.userRegister);
 //  */
 router.post("/user/login", UserController.userLogin);
 router.get("/user/info", passportCheck, UserController.userInfo);
-router.put("/user/update", passportCheck, uploadCloud.single("avatar"), UserController.useUpdate);
+router.put("/user/update", passportCheck, uploadCloud.single("avatar"), UserController.userUpdate);
 router.get("/user/info", passportCheck, UserController.userInfo);
+
+router.post("/pet/register", passportCheck, uploadCloud.single("avatarURL"), PetController.petRegister);
+router.delete("/pet/delete/:id", passportCheck, PetController.petDelete);
+
+router.get("/notice/category", NoticeController.noticeCategory);
 // Routes Must have checked function of JWT exp
 // /**
 //  * @swagger
