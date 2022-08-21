@@ -42,7 +42,11 @@ const UserSchema = new mongoose.Schema(
     userNotices: [{
       type: Schema.Types.ObjectId,
       ref: 'Notice',
-    }]
+    }],
+    userSelectedNotices: [{
+      type: Schema.Types.ObjectId,
+      ref: 'Notice',
+    }],
   },
   {
     timestamps: true

@@ -1,7 +1,25 @@
 const Notice = require("../models/Notice.model");
 const User = require("../models/User.model");
 
+module.exports.noticeSelOfUser = (req, res) => { 
+  console.log("first");
+	// const owner = req.user._id;
+  // User.findById(owner).then(doc => {
+  //   if (!doc) {
+  //     res.status(400).json({
+  //       success: false,
+  //       message: "Not found finance data with this user ID"
+  //     });
+  //   }
 
+    res.status(200).json({
+      success: true,
+      message: "Data found with this ID",
+      // userSelectedNotices:doc
+     
+    });
+  // });
+};
 module.exports.noticeCategory = (req, res) => { 
 
   Notice.find().then(doc => {
@@ -15,8 +33,8 @@ module.exports.noticeCategory = (req, res) => {
     res.status(200).json({
       success: true,
       message: "Data found with this ID",
-      notice:doc
-     
+      notice:doc,
+      category: ["Lost/Found", "Give to good hands", "Sell"],
     });
   });
 };
@@ -34,9 +52,83 @@ module.exports.noticeOfUser = (req, res) => {
     res.status(200).json({
       success: true,
       message: "Data found with this ID",
-      notice:doc
+      noticeOfUser:doc
      
     });
+  });
+};
+
+module.exports.noticeByID = (req, res) => { 
+	const owner = req.user._id;
+  Notice.findOne({_id:req.params.id, owner}).then(doc => {
+    if (!doc) {
+      res.status(400).json({
+        success: false,
+        message: "Not found finance data with this user ID"
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Data found with this ID",
+      noticeByID:doc
+     
+    });
+  });
+};
+
+
+
+
+module.exports.noticeSelCreate = async (req, res) => {
+	const owner = req.user._id;
+
+	Notice.findById(req.params.id)
+		.then(notice => {
+			if (!notice) {
+        res.status(400).json({
+          success: false,
+          message: "Not found notice with this ID"
+        });
+      } else {
+				User.findByIdAndUpdate(owner, {$push: {userSelectedNotices: notice._id} },{new:true})
+					.then(user => {
+						if (user) {
+							res.status(201).json({success: true, notice});
+						}
+					})
+					.catch(err => {
+						throw new Error(err);
+					});
+			}
+		})
+		.catch(err =>
+			res.status(400).json({success: false, error: err, message: err.message})
+		);
+};
+
+module.exports.noticeSelDelete = (req, res) => {
+
+  const owner = req.user._id;
+
+  Notice.findById(req.params.id).then(doc => {
+
+    if (!doc) {
+      res.status(400).json({
+        success: false,
+        message: "Not found notice with this ID"
+      });
+    } else {
+      User.findByIdAndUpdate(owner, { $pull: { "userSelectedNotices":  req.params.id } },{new:true})
+					.then(user => {
+						if (user) {
+							res.status(201).json({success: true, notice:doc});
+						}
+					})
+					.catch(err => {
+						throw new Error(err);
+					});
+    } 
   });
 };
 
@@ -49,7 +141,7 @@ module.exports.noticeCreate = async (req, res) => {
 	Notice.create({ animals_photos: req.file.path, owner, ...noticeData})
 		.then(notice => {
 			if (notice) {
-				User.findByIdAndUpdate(owner, {$push: {userNotices: notice._id}})
+				User.findByIdAndUpdate(owner, {$push: {userNotices: notice._id}},{new:true} )
 					.then(user => {
 						if (user) {
 							res.status(201).json({success: true, notice});
@@ -66,18 +158,18 @@ module.exports.noticeCreate = async (req, res) => {
 };
 
 module.exports.noticeDelete = (req, res) => {
-  console.log("tut");
+
   const owner = req.user._id;
 
   Notice.findByIdAndRemove(req.params.id).then(doc => {
-    console.log("tut")
+
     if (!doc) {
       res.status(400).json({
         success: false,
         message: "Not found notice with this ID"
       });
     } else {
-      User.findByIdAndUpdate(owner, { $pull: { "userNotices":  req.params.id } })
+      User.findByIdAndUpdate(owner, { $pull: { "userNotices":  req.params.id } },{new:true})
 					.then(user => {
 						if (user) {
 							res.status(201).json({success: true, notice:doc});

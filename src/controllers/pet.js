@@ -38,7 +38,7 @@ module.exports.petDelete = (req, res) => {
       User.findByIdAndUpdate(owner, { $pull: { "userPets" :  req.params.id } })
 					.then(user => {
 						if (user) {
-							res.status(201).json({success: true, pet});
+							res.status(201).json({success: true, pet:doc});
 						}
 					})
 					.catch(err => {
