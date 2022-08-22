@@ -2,23 +2,21 @@ const Notice = require("../models/Notice.model");
 const User = require("../models/User.model");
 
 module.exports.noticeSelOfUser = (req, res) => { 
-  console.log("first");
-	// const owner = req.user._id;
-  // User.findById(owner).then(doc => {
-  //   if (!doc) {
-  //     res.status(400).json({
-  //       success: false,
-  //       message: "Not found finance data with this user ID"
-  //     });
-  //   }
-
+	const owner = req.user._id;
+  
+  User.findById(owner, {userSelectedNotices:1}).populate('userSelectedNotices').then(doc => {
+    if (!doc) {
+      res.status(400).json({
+        success: false,
+        message: "Not found selected notice of user"
+      });
+    }
+const {userSelectedNotices} = doc
     res.status(200).json({
       success: true,
-      message: "Data found with this ID",
-      // userSelectedNotices:doc
-     
+      userSelectedNotices
     });
-  // });
+  });
 };
 module.exports.noticeCategory = (req, res) => { 
 

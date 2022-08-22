@@ -173,16 +173,17 @@ router.get("/user/info", passportCheck, UserController.userInfo);
 router.post("/pet/", passportCheck, uploadCloud.single("avatarURL"), PetController.petRegister);
 router.delete("/pet/:id", passportCheck, PetController.petDelete);
 
+router.get("/notice/selected/", passportCheck, NoticeController.noticeSelOfUser);
+router.post("/notice/selected/:id", passportCheck, NoticeController.noticeSelCreate);
+router.delete("/notice/selected/:id", passportCheck, NoticeController.noticeSelDelete);
+
 router.get("/notice/category", NoticeController.noticeCategory);
 router.post("/notice/", passportCheck, uploadCloud.single("animals_photos"), NoticeController.noticeCreate);
 router.delete("/notice/:id", passportCheck, NoticeController.noticeDelete);
 router.get("/notice/", passportCheck, NoticeController.noticeOfUser);
 router.get("/notice/:id", passportCheck, NoticeController.noticeByID);
 
-router.get("/notice/selected/", passportCheck, NoticeController.noticeSelOfUser);
-router.post("/notice/selected/:id", passportCheck, NoticeController.noticeSelCreate);
 
-router.delete("/notice/selected/:id", passportCheck, NoticeController.noticeSelDelete);
 // Routes Must have checked function of JWT exp
 // /**
 //  * @swagger
