@@ -7,15 +7,15 @@ const options = {
     info: {
       title: "MyWallet API",
       version: "1.0.0",
-      description: "view what routes pass"
+      description: "view what routes pass",
     },
-    basePath: "/api"
+    basePath: "/api",
   },
-  apis: ["src/routes/routes.js"]
+  apis: ["src/routes/routes.js"],
 };
 
 const specs = swaggerJsDoc(options);
 
-module.exports = app => {
+module.exports = (app) => {
   app.use("/doc", swaggerUI.serve, swaggerUI.setup(specs));
 };

@@ -1,21 +1,19 @@
 const jwt = require("jsonwebtoken");
-const config = require("../../config/config");
 const passport = require("passport");
-const async = require("async");
-const nodemailer = require("nodemailer");
 const crypto = require("crypto");
-
+const nodemailer = require("nodemailer");
 
 const User = require("../models/User.model.js");
 
+require("dotenv").config();
 
 // Get User data by Id
 module.exports.userInfo = async (req, res) => {
   const _id = req.user;
-  const user = await User.findById(_id).populate('userNotices').populate('userPets');
-  res.status(200).json(
-    user
-);
+  const user = await User.findById(_id)
+    .populate("userNotices")
+    .populate("userPets");
+  res.status(200).json(user);
 };
 
 // Register New User and Check this email have in DB
@@ -36,39 +34,39 @@ module.exports.userRegister = (req, res) => {
   if (error.length > 0) {
     res.status(400).json({
       success: false,
-      message: error
+      message: error,
     });
-  } else {        
- User.findOne({ email: email }).then(user => {
+  } else {
+    User.findOne({ email: email }).then((user) => {
       if (user) {
         error.push({ message: "Email already exists" });
         res.status(400).json({
           success: false,
-          message: error[0].message
+          message: error[0].message,
         });
       } else {
         const newUser = new User({
-         ...userData
-        });       
+          ...userData,
+        });
 
-        newUser.save().then(user => {             
-            const userData = {
-              id: String(user._id),
-              email: user.email,
-              name: user.name,
-              createdAt: user.createdAt
-            };
-            const token = jwt.sign( userData, config.jwt_encryption);
-            res.status(200).json({
-              success: true,
-              message: "Successfully created new user. You can Login",
-              user: userData,
-              token
-            });
+        newUser.save().then((user) => {
+          const userData = {
+            id: String(user._id),
+            email: user.email,
+            name: user.name,
+            createdAt: user.createdAt,
+          };
+          const token = jwt.sign(userData, process.env.ACCESS_TOKEN_SECRET);
+          res.status(200).json({
+            success: true,
+            message: "Successfully created new user. You can Login",
+            user: userData,
+            token,
           });
-        } 
-      })      
+        });
       }
+    });
+  }
 };
 
 // Update User data
@@ -80,29 +78,28 @@ module.exports.userUpdate = (req, res) => {
     res.status(400);
     res.json({
       status: "error",
-      text: "there is no such user"
+      text: "there is no such user",
     });
   };
 
-  const sendResponse = newUser => {
+  const sendResponse = (newUser) => {
     if (!newUser) {
       return sendError();
     }
 
     res.json({
       status: "success",
-      user: newUser
+      user: newUser,
     });
   };
 
-       User.findByIdAndUpdate(
-        id,
-        { userImgUrl: req.file.path, ...updateData },
-        { new: true }
-      ).then(result => {
-        sendResponse(result);
-      });    
-  
+  User.findByIdAndUpdate(
+    id,
+    { userImgUrl: req.file.path, ...updateData },
+    { new: true }
+  ).then((result) => {
+    sendResponse(result);
+  });
 };
 
 // Login User and get him Token for access to some route action
@@ -110,30 +107,30 @@ module.exports.userLogin = (req, res) => {
   passport.authenticate(
     "local",
     {
-      session: false
+      session: false,
     },
     (err, user, info) => {
       if (err || !user) {
         return res.status(400).json({
           message: info ? info.message : "Login failed",
-          user: user
+          user: user,
         });
       }
 
       req.login(
         user,
         {
-          session: false
+          session: false,
         },
-        err => {
+        (err) => {
           if (err) {
             res.status(301).json({ err });
           }
 
-          const token = jwt.sign(user, config.jwt_encryption);
+          const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
           return res.json({
             user,
-            token
+            token,
           });
         }
       );
@@ -141,12 +138,11 @@ module.exports.userLogin = (req, res) => {
   )(req, res);
 };
 
-
 // Logout User
 module.exports.userLogout = (req, res) => {
   req.logout();
   res.status(200).json({
-    message: "User successfully logout"
+    message: "User successfully logout",
   });
 };
 
@@ -156,18 +152,18 @@ module.exports.resetPassword = (req, res) => {
     {
       resetPasswordToken: req.params.token,
       resetPasswordExpires: {
-        $gt: Date.now()
-      }
+        $gt: Date.now(),
+      },
     },
-    function(err, user) {
+    function (err, user) {
       if (!user) {
         req.flash("error", "Password reset token is invalid or has expired.");
         return res.status(400).json({
-          message: "Password reset token is invalid or has expired."
+          message: "Password reset token is invalid or has expired.",
         });
       }
       res.render("reset", {
-        user: req.user
+        user: req.user,
       });
     }
   );
@@ -177,18 +173,18 @@ module.exports.resetPassword = (req, res) => {
 module.exports.forgotPassword = (req, res, next) => {
   async.waterfall(
     [
-      function(done) {
-        crypto.randomBytes(20, function(err, buf) {
+      function (done) {
+        crypto.randomBytes(20, function (err, buf) {
           var token = buf.toString("hex");
           done(err, token);
         });
       },
-      function(token, done) {
+      function (token, done) {
         User.findOne(
           {
-            email: req.body.email
+            email: req.body.email,
           },
-          function(err, user) {
+          function (err, user) {
             if (!user) {
               req.flash("error", "No account with that email address exists.");
               return res.redirect("/forgot");
@@ -197,19 +193,19 @@ module.exports.forgotPassword = (req, res, next) => {
             user.resetPasswordToken = token;
             user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
 
-            user.save(function(err) {
+            user.save(function (err) {
               done(err, token, user);
             });
           }
         );
       },
-      function(token, user, done) {
+      function (token, user, done) {
         const smtpTransport = nodemailer.createTransport("SMTP", {
           service: "SendGrid",
           auth: {
             user: "!!! YOUR SENDGRID USERNAME !!!",
-            pass: "!!! YOUR SENDGRID PASSWORD !!!"
-          }
+            pass: "!!! YOUR SENDGRID PASSWORD !!!",
+          },
         });
         var mailOptions = {
           to: user.email,
@@ -223,9 +219,9 @@ module.exports.forgotPassword = (req, res, next) => {
             "/api/v1/reset/" +
             token +
             "\n\n" +
-            "If you did not request this, please ignore this email and your password will remain unchanged.\n"
+            "If you did not request this, please ignore this email and your password will remain unchanged.\n",
         };
-        smtpTransport.sendMail(mailOptions, function(err) {
+        smtpTransport.sendMail(mailOptions, function (err) {
           req.flash(
             "info",
             "An e-mail has been sent to " +
@@ -234,9 +230,9 @@ module.exports.forgotPassword = (req, res, next) => {
           );
           done(err, "done");
         });
-      }
+      },
     ],
-    function(err) {
+    function (err) {
       if (err) return next(err);
       res.redirect("/forgot");
     }
@@ -249,23 +245,23 @@ module.exports.userChangePassword = (req, res) => {
 
   if (req.user) {
     if (passwordDetails.newPassword) {
-      User.findById(req.user.id, function(err, user) {
+      User.findById(req.user.id, function (err, user) {
         if (!err && user) {
           if (passwordDetails.newPassword === passwordDetails.verifyPassword) {
             user.password = passwordDetails.newPassword;
 
-            user.save(function(err) {
+            user.save(function (err) {
               if (err) {
                 return res.status(422).json({
-                  message: err
+                  message: err,
                 });
               } else {
-                req.login(user, function(err) {
+                req.login(user, function (err) {
                   if (err) {
                     res.status(400).json({ message: err });
                   } else {
                     res.status(201).json({
-                      message: "Password changed successfully"
+                      message: "Password changed successfully",
                     });
                   }
                 });
@@ -273,23 +269,23 @@ module.exports.userChangePassword = (req, res) => {
             });
           } else {
             res.status(422).json({
-              message: "Passwords do not match"
+              message: "Passwords do not match",
             });
           }
         } else {
           res.status(400).json({
-            message: "User is not found"
+            message: "User is not found",
           });
         }
       });
     } else {
       res.status(422).json({
-        message: "Please provide a new password"
+        message: "Please provide a new password",
       });
     }
   } else {
     res.status(401).json({
-      message: "User is not signed in"
+      message: "User is not signed in",
     });
   }
 };

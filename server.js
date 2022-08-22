@@ -7,7 +7,7 @@ const morgan = require("morgan");
 
 require("dotenv").config();
 
-// const swaggerDoc = require("./src/swagger/");
+const swaggerDoc = require("./src/modules/swagger/swaggerDoc");
 const routes = require("./src/routes/routes");
 const app = express();
 
@@ -15,23 +15,21 @@ const app = express();
 require("./src/modules/passport/passport")(passport);
 
 // Get url to server MongoDB
-const dbUrl = require("./config/config").MondoDB.url;
+const dbUrl = process.env.MONGO_CONNECTION_URL;
 
 // Connect to MongoDB
 mongoose
   .connect(dbUrl)
   .then(() => console.log("MongoDB Connected"))
-  .catch(err => console.log(err));
+  .catch((err) => console.log(err));
 
 // Logger - see connection in/out
 app.use(morgan("dev"));
 // Express json parse
 app.use(express.json());
-
+// Express static
 app.use("/data", express.static("data"));
-// newUser.financeId =
-// Attempt to save the user// newUser.financeId =
-// Attempt to save the user
+
 // Express body parser
 app.use(express.urlencoded({ extended: true }));
 
@@ -40,7 +38,7 @@ app.use(
   session({
     secret: "secret cat",
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: true,
   })
 );
 
@@ -52,14 +50,14 @@ app.use(passport.session());
 app.use(flash());
 
 // Global variables
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
   res.locals.success_msg = req.flash("success_msg");
   res.locals.error_msg = req.flash("error_msg");
   res.locals.error = req.flash("error");
   next();
 });
 
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
     "Access-Control-Allow-Headers",
@@ -68,13 +66,7 @@ app.use(function(req, res, next) {
   next();
 });
 
-// app.use("/", express.static("public"));
-// app.use("/register", express.static("public"));
-// app.use("/login", express.static("public"));
-// app.use("/dashboard", express.static("public"));
-// app.use("/dashboard/currency", express.static("public"));
-// app.use("/dashboard/diagram", express.static("public"));
-// swaggerDoc(app);
+swaggerDoc(app);
 
 // Connecting All API Routes
 app.use("/", routes);

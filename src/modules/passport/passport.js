@@ -2,17 +2,18 @@ const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const LocalStrategy = require("passport-local").Strategy;
 const User = require("../../models/User.model");
-const config = require("../../../config/config");
+
+require("dotenv").config();
 
 // Setup work and export for the JWT passport strategy
-module.exports = function(passport) {
+module.exports = (passport) => {
   const opts = {};
   opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-  opts.secretOrKey = config.jwt_encryption;
+  opts.secretOrKey = process.env.ACCESS_TOKEN_SECRET;
 
   passport.use(
-    new JwtStrategy(opts, function(jwt_payload, done) {
-      User.findById(jwt_payload.id, function(err, user) {
+    new JwtStrategy(opts, function (jwt_payload, done) {
+      User.findById(jwt_payload.id, function (err, user) {
         if (err) {
           return done(err, false);
         }
@@ -25,12 +26,12 @@ module.exports = function(passport) {
     })
   );
 
-  passport.serializeUser(function(user, done) {
+  passport.serializeUser(function (user, done) {
     done(null, user.id);
   });
 
-  passport.deserializeUser(function(id, done) {
-    User.findById(id, function(err, user) {
+  passport.deserializeUser(function (id, done) {
+    User.findById(id, function (err, user) {
       done(err, user);
     });
   });
@@ -39,23 +40,23 @@ module.exports = function(passport) {
     new LocalStrategy(
       {
         usernameField: "email",
-        passwordField: "password"
+        passwordField: "password",
       },
-      function(email, password, cb) {
+      function (email, password, cb) {
         //Assume there is a DB module providing a global UserModel
         return User.findOne({
-          email
+          email,
         })
-          .then(user => {
+          .then((user) => {
             if (!user) {
               return cb(null, false, {
-                message: "Incorrect email or password."
+                message: "Incorrect email or password.",
               });
             }
-            user.comparePassword(password, function(err, isMatch) {
+            user.comparePassword(password, function (err, isMatch) {
               if (!isMatch) {
                 return cb(null, false, {
-                  message: "Incorrect email or password."
+                  message: "Incorrect email or password.",
                 });
               }
 
@@ -63,7 +64,7 @@ module.exports = function(passport) {
                 id: String(user._id),
                 email: user.email,
                 name: user.name,
-                createdAt: user.createdAt
+                createdAt: user.createdAt,
               };
 
               if (user.first) {
@@ -79,12 +80,12 @@ module.exports = function(passport) {
               }
               if (isMatch && !err) {
                 return cb(null, userData, {
-                  message: "Logined Successfully"
+                  message: "Logined Successfully",
                 });
               }
             });
           })
-          .catch(err => {
+          .catch((err) => {
             return cb(err);
           });
       }
