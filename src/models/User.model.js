@@ -59,10 +59,10 @@ const UserSchema = new mongoose.Schema(
 );
 
 // Saves the user's password hashed (plain text password storage is not good)
-UserSchema.pre("save", (next) => {
+UserSchema.pre("save", function (next){
   var user = this;
   if (this.isModified("password") || this.isNew) {
-    bcrypt.genSalt(10, (err, salt) => {
+    bcrypt.genSalt(10, function (err, salt)  {
       if (err) {
         return next(err);
       }
