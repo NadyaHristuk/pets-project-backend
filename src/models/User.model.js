@@ -40,16 +40,18 @@ const UserSchema = new mongoose.Schema(
         ref: "Pet",
       },
     ],
-    userNotices: [
+    ownNotices: [
       {
         type: Schema.Types.ObjectId,
         ref: "Notice",
+        default: [],
       },
     ],
-    userSelectedNotices: [
+    favoriteNotices: [
       {
         type: Schema.Types.ObjectId,
         ref: "Notice",
+        default: [],
       },
     ],
   },
@@ -59,25 +61,25 @@ const UserSchema = new mongoose.Schema(
 );
 
 // Saves the user's password hashed (plain text password storage is not good)
-UserSchema.pre("save", function (next){
-  var user = this;
-  if (this.isModified("password") || this.isNew) {
-    bcrypt.genSalt(10, function (err, salt)  {
-      if (err) {
-        return next(err);
-      }
-      bcrypt.hash(user.password, salt, function (err, hash) {
-        if (err) {
-          return next(err);
-        }
-        user.password = hash;
-        next();
-      });
-    });
-  } else {
-    return next();
-  }
-});
+// UserSchema.pre("save", function (next){
+//   var user = this;
+//   if (this.isModified("password") || this.isNew) {
+//     bcrypt.genSalt(10, function (err, salt)  {
+//       if (err) {
+//         return next(err);
+//       }
+//       bcrypt.hash(user.password, salt, function (err, hash) {
+//         if (err) {
+//           return next(err);
+//         }
+//         user.password = hash;
+//         next();
+//       });
+//     });
+//   } else {
+//     return next();
+//   }
+// });
 
 // Create method to compare password input to password saved in database
 UserSchema.pre("save", function(next) {

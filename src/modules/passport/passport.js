@@ -60,26 +60,8 @@ module.exports = (passport) => {
                 });
               }
 
-              const userData = {
-                id: String(user._id),
-                email: user.email,
-                name: user.name,
-                createdAt: user.createdAt,
-              };
-
-              if (user.first) {
-                userData.firstName = user.first;
-              }
-
-              if (user.last) {
-                userData.lastName = user.last;
-              }
-
-              if (user.profileImage) {
-                userData.profileImage = user.profileImage;
-              }
-              if (isMatch && !err) {
-                return cb(null, userData, {
+                       if (isMatch && !err) {
+                return cb(null, user, {
                   message: "Logined Successfully",
                 });
               }

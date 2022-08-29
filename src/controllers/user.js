@@ -19,11 +19,11 @@ module.exports.userInfo = async (req, res) => {
 // Register New User and Check this email have in DB
 module.exports.userRegister = (req, res) => {
   const userData = req.body;
-  const { name, email, password } = req.body;
+  const { name, email, password, city, phone  } = req.body;
   const error = [];
 
-  if (!email || !password || !name) {
-    error.push("Please enter email and password and name.");
+  if (!email || !password || !name || !city || !phone) {
+    error.push("Please enter email and password and name and city and phone.");
   } else {
     // Check basic creteria to password field for create user must
     if (password.length < 6) {
@@ -50,11 +50,26 @@ module.exports.userRegister = (req, res) => {
         });
 
         newUser.save().then((user) => {
+          const {
+            _id,
+            email,
+            name,
+            city,
+            birthday,
+            phone,
+            ownNotices,
+            favoriteNotices,
+          } = user;
+
           const userData = {
-            id: String(user._id),
-            email: user.email,
-            name: user.name,
-            createdAt: user.createdAt,
+            id: String(_id),
+            email,
+            name,
+            city,
+            birthday,
+            phone,
+            ownNotices,
+            favoriteNotices,
           };
           const token = jwt.sign(userData, process.env.ACCESS_TOKEN_SECRET);
           res.status(200).json({
@@ -68,6 +83,65 @@ module.exports.userRegister = (req, res) => {
     });
   }
 };
+
+// Login User and get him Token for access to some route action
+module.exports.userLogin = (req, res) => {
+  passport.authenticate(
+    "local",
+    {
+      session: false,
+    },
+    (err, user, info) => {
+      if (err || !user) {
+        return res.status(400).json({
+          message: info ? info.message : "Login failed",
+          user: user,
+        });
+      }
+      console.log(user);
+      const {
+        _id,
+        email,
+        name,
+        city,
+        birthday,
+        phone,
+        ownNotices,
+        favoriteNotices,
+      } = user;
+
+      const userData = {
+        id: String(_id),
+        email,
+        name,
+        city,
+        birthday,
+        phone,
+        ownNotices,
+        favoriteNotices,
+      };
+
+      req.login(
+        user,
+        {
+          session: false,
+        },
+        (err) => {
+          if (err) {
+            res.status(301).json({ err });
+          }
+
+          const token = jwt.sign(userData, process.env.ACCESS_TOKEN_SECRET);
+          return res.json({
+            userData,
+            token,
+          });
+        }
+      );
+    }
+  )(req, res);
+};
+
 
 // Update User data
 module.exports.userUpdate = (req, res) => {
@@ -102,41 +176,7 @@ module.exports.userUpdate = (req, res) => {
   });
 };
 
-// Login User and get him Token for access to some route action
-module.exports.userLogin = (req, res) => {
-  passport.authenticate(
-    "local",
-    {
-      session: false,
-    },
-    (err, user, info) => {
-      if (err || !user) {
-        return res.status(400).json({
-          message: info ? info.message : "Login failed",
-          user: user,
-        });
-      }
 
-      req.login(
-        user,
-        {
-          session: false,
-        },
-        (err) => {
-          if (err) {
-            res.status(301).json({ err });
-          }
-
-          const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
-          return res.json({
-            user,
-            token,
-          });
-        }
-      );
-    }
-  )(req, res);
-};
 
 // Logout User
 module.exports.userLogout = (req, res) => {
@@ -170,74 +210,74 @@ module.exports.resetPassword = (req, res) => {
 };
 
 //Send to user email link with url+token for reset pass
-module.exports.forgotPassword = (req, res, next) => {
-  async.waterfall(
-    [
-      function (done) {
-        crypto.randomBytes(20, function (err, buf) {
-          var token = buf.toString("hex");
-          done(err, token);
-        });
-      },
-      function (token, done) {
-        User.findOne(
-          {
-            email: req.body.email,
-          },
-          function (err, user) {
-            if (!user) {
-              req.flash("error", "No account with that email address exists.");
-              return res.redirect("/forgot");
-            }
+// module.exports.forgotPassword = (req, res, next) => {
+//   async.waterfall(
+//     [
+//       function (done) {
+//         crypto.randomBytes(20, function (err, buf) {
+//           var token = buf.toString("hex");
+//           done(err, token);
+//         });
+//       },
+//       function (token, done) {
+//         User.findOne(
+//           {
+//             email: req.body.email,
+//           },
+//           function (err, user) {
+//             if (!user) {
+//               req.flash("error", "No account with that email address exists.");
+//               return res.redirect("/forgot");
+//             }
 
-            user.resetPasswordToken = token;
-            user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+//             user.resetPasswordToken = token;
+//             user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
 
-            user.save(function (err) {
-              done(err, token, user);
-            });
-          }
-        );
-      },
-      function (token, user, done) {
-        const smtpTransport = nodemailer.createTransport("SMTP", {
-          service: "SendGrid",
-          auth: {
-            user: "!!! YOUR SENDGRID USERNAME !!!",
-            pass: "!!! YOUR SENDGRID PASSWORD !!!",
-          },
-        });
-        var mailOptions = {
-          to: user.email,
-          from: "passwordreset@demo.com",
-          subject: "Node.js Password Reset",
-          text:
-            "You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n" +
-            "Please click on the following link, or paste this into your browser to complete the process:\n\n" +
-            "http://" +
-            req.headers.host +
-            "/api/v1/reset/" +
-            token +
-            "\n\n" +
-            "If you did not request this, please ignore this email and your password will remain unchanged.\n",
-        };
-        smtpTransport.sendMail(mailOptions, function (err) {
-          req.flash(
-            "info",
-            "An e-mail has been sent to " +
-              user.email +
-              " with further instructions."
-          );
-          done(err, "done");
-        });
-      },
-    ],
-    function (err) {
-      if (err) return next(err);
-      res.redirect("/forgot");
-    }
-  );
-};
+//             user.save(function (err) {
+//               done(err, token, user);
+//             });
+//           }
+//         );
+//       },
+//       function (token, user, done) {
+//         const smtpTransport = nodemailer.createTransport("SMTP", {
+//           service: "SendGrid",
+//           auth: {
+//             user: "!!! YOUR SENDGRID USERNAME !!!",
+//             pass: "!!! YOUR SENDGRID PASSWORD !!!",
+//           },
+//         });
+//         var mailOptions = {
+//           to: user.email,
+//           from: "passwordreset@demo.com",
+//           subject: "Node.js Password Reset",
+//           text:
+//             "You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n" +
+//             "Please click on the following link, or paste this into your browser to complete the process:\n\n" +
+//             "http://" +
+//             req.headers.host +
+//             "/api/v1/reset/" +
+//             token +
+//             "\n\n" +
+//             "If you did not request this, please ignore this email and your password will remain unchanged.\n",
+//         };
+//         smtpTransport.sendMail(mailOptions, function (err) {
+//           req.flash(
+//             "info",
+//             "An e-mail has been sent to " +
+//               user.email +
+//               " with further instructions."
+//           );
+//           done(err, "done");
+//         });
+//       },
+//     ],
+//     function (err) {
+//       if (err) return next(err);
+//       res.redirect("/forgot");
+//     }
+//   );
+// };
 
 module.exports.userChangePassword = (req, res) => {
   // Init Variables
