@@ -28,7 +28,10 @@ module.exports.userRegister = (req, res, next) => {
   try {
     const { error } = joiRegisterSchema.validate(req.body);
     if (error) {
-      throw new createError.BadRequest(error.message);
+      res.status(400).json({
+        success: false,
+        message: error.message,
+      });
     }
     const { name, email, password, city, phone } = req.body;
     User.findOne({ email }).then((user) => {
@@ -45,16 +48,6 @@ module.exports.userRegister = (req, res, next) => {
         phone,
       });
       newUser.setPassword(password);
-      const payload = {
-        id: user._id,
-      };
-      const accessToken = jwt.sign(payload, JWT_ACCESS_SECRET_KEY, {
-        expiresIn: "1h",
-      });
-      const refreshToken = jwt.sign(payload, JWT_REFRESH_SECRET_KEY, {
-        expiresIn: "30d",
-      });
-  
 
       newUser.save().then((user) => {
         const {
@@ -69,6 +62,15 @@ module.exports.userRegister = (req, res, next) => {
           ownNotices,
           favoriteNotices,
         } = user;
+        const payload = {
+          id: _id,
+        };
+        const accessToken = jwt.sign(payload, JWT_ACCESS_SECRET_KEY, {
+          expiresIn: "1h",
+        });
+        const refreshToken = jwt.sign(payload, JWT_REFRESH_SECRET_KEY, {
+          expiresIn: "30d",
+        });
 
         const userData = {
           id: String(_id),
