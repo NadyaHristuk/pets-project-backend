@@ -102,10 +102,10 @@ module.exports.userLogin = async (req, res, next) => {
     const payload = {
       id: user._id,
     };
-    const newAccessToken = jwt.sign(payload, JWT_ACCESS_SECRET_KEY, {
+    const accessToken = jwt.sign(payload, JWT_ACCESS_SECRET_KEY, {
       expiresIn: "1h",
     });
-    const newRefreshToken = jwt.sign(payload, JWT_REFRESH_SECRET_KEY, {
+    const refreshToken = jwt.sign(payload, JWT_REFRESH_SECRET_KEY, {
       expiresIn: "30d",
     });
 
@@ -133,8 +133,8 @@ module.exports.userLogin = async (req, res, next) => {
       ownNotices,
       favoriteNotices,
       data: {
-        newAccessToken,
-        newRefreshToken,
+        accessToken,
+        refreshToken,
       },
     });
   } catch (error) {
@@ -189,10 +189,10 @@ module.exports.refreshTokens = async (req, res) => {
         throw new createError.NotFound("Invalid user");
       }
 
-      const newAccessToken = jwt.sign({ id: user._id }, JWT_ACCESS_SECRET_KEY, {
+      const accessToken = jwt.sign({ id: user._id }, JWT_ACCESS_SECRET_KEY, {
         expiresIn: "1h",
       });
-      const newRefreshToken = jwt.sign(
+      const refreshToken = jwt.sign(
         {
           id: user._id,
         },
@@ -203,8 +203,8 @@ module.exports.refreshTokens = async (req, res) => {
         status: "success",
         code: 200,
         data: {
-          newAccessToken,
-          newRefreshToken,
+           accessToken,
+           refreshToken,
         },
       });
     } catch (err) {

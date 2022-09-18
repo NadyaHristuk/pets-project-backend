@@ -8,13 +8,13 @@ module.exports.noticeCategory = (req, res) => {
     if (!doc) {
       res.status(400).json({
         success: false,
-        message: "Not found finance data with this user ID",
+        message: "Not found notice data with this user ID",
       });
     }
 
     res.status(200).json({
       success: true,
-      message: "Data found with this ID",
+      message: "found notice data with this user ID",
       notice: doc,
       category: ["Lost/Found", "Give to good hands", "Sell"],
     });
@@ -24,8 +24,10 @@ module.exports.noticeCategory = (req, res) => {
 module.exports.noticeCreate = (req, res) => {
   const owner = req.user._id;
   const noticeData = req.body;
-
-  Notice.create({ animals_photos: req.file.path, owner, ...noticeData })
+  const data = req.file
+  ? { animals_photos: req.file.path, owner, ...noticeData }
+  : { owner, ...noticeData};
+  Notice.create(data)
     .then((notice) => {
       if (notice) {
         User.findByIdAndUpdate(
