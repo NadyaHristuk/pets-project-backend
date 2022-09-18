@@ -49,12 +49,6 @@ const UserSchema = new Schema(
       type: String,
       default: null,
     },
-    accessToken: {
-      type: String,
-    },
-    refreshToken: {
-      type: String,
-    },
     userPets: [
       {
         type: Schema.Types.ObjectId,

@@ -6,30 +6,31 @@ const PetSchema = new mongoose.Schema(
     owner: {
       type: Schema.Types.ObjectId,
       ref: "User",
-      required: true
+      required: true,
     },
     name: {
       type: String,
-      required: true
+      required: true,
     },
     birthdate: {
       type: String,
-      required: true
+      required: true,
     },
     breed: {
       type: String,
-      required: true
+      required: true,
     },
     avatarURL: {
-      type: String
+      type: String,
+      default: null,
     },
     comments: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 );
 

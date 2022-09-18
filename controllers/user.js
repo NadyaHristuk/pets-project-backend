@@ -19,7 +19,7 @@ module.exports.userInfo = async (req, res) => {
     password: 0,
   })
     .populate("ownNotices", { title: 1, description: 1 })
-    .populate("userPets")
+    .populate("userPets", { owner: 0, createdAt: 0, updatedAt: 0, __v: 0 })
     .populate("favoriteNotices", { title: 1, description: 1 });
   res.status(200).json(user);
 };
@@ -108,11 +108,6 @@ module.exports.userLogin = async (req, res, next) => {
     const newRefreshToken = jwt.sign(payload, JWT_REFRESH_SECRET_KEY, {
       expiresIn: "30d",
     });
-    const upddatedUser = await User.findByIdAndUpdate(
-      user._id,
-      { accessToken: newAccessToken, refreshToken: newRefreshToken },
-      { new: true }
-    );
 
     const {
       _id,
@@ -124,7 +119,7 @@ module.exports.userLogin = async (req, res, next) => {
       userPets,
       ownNotices,
       favoriteNotices,
-    } = upddatedUser;
+    } = user;
 
     return res.json({
       id: String(_id),
@@ -170,46 +165,39 @@ module.exports.userUpdate = (req, res) => {
       user: newUser,
     });
   };
-
-  User.findByIdAndUpdate(
-    id,
-    { userImgUrl: req.file.path, ...updateData },
-    { new: true }
-  ).then((result) => {
+ 
+  const data = !!req.file
+    ? { userImgUrl: req.file.path, ...updateData }
+    : { ...updateData };
+ 
+  User.findByIdAndUpdate(id, data, { new: true }).then((result) => {
     sendResponse(result);
   });
 };
 
 module.exports.refreshTokens = async (req, res) => {
   const authorizationHeader = req.get("Authorization");
- 
+
   if (authorizationHeader) {
     const reqRefreshToken = authorizationHeader.replace("Bearer ", "");
-     
+
     try {
-      const {id} = jwt.verify(reqRefreshToken, JWT_REFRESH_SECRET_KEY);
+      const { id } = jwt.verify(reqRefreshToken, JWT_REFRESH_SECRET_KEY);
       const user = await User.findById(id);
-     
+
       if (!user) {
         throw new createError.NotFound("Invalid user");
       }
-     
-      const newAccessToken = jwt.sign(
-        { id: user._id },
-        JWT_ACCESS_SECRET_KEY,
-        { expiresIn: "1h" }
-      );
+
+      const newAccessToken = jwt.sign({ id: user._id }, JWT_ACCESS_SECRET_KEY, {
+        expiresIn: "1h",
+      });
       const newRefreshToken = jwt.sign(
         {
           id: user._id,
         },
         JWT_REFRESH_SECRET_KEY,
         { expiresIn: "30d" }
-      );
-      await User.findByIdAndUpdate(
-        user._id,
-        { accessToken: newAccessToken, refreshToken: newRefreshToken },
-        { new: true }
       );
       res.json({
         status: "success",

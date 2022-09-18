@@ -20,7 +20,7 @@ module.exports = {
       }
       const { id } = jwt.decode(token, secret);   
       const userFind = await User.findById(id);  
-      if (!userFind || token !== userFind.accessToken) {
+      if (!userFind) {
         next(new Unauthorized("Not authorized"));
       }
       const TokenExpired = isTokenExpired(token);
