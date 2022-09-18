@@ -14,7 +14,7 @@ module.exports.noticeCategory = (req, res) => {
       success: true,
       message: "found notice data with this user ID",
       notice: doc,
-      category: ["Lost/Found", "Give to good hands", "Sell"],
+      category: ["lost-found", "for-free", "sell"],
     });
   });
 };

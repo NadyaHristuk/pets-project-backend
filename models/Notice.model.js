@@ -6,7 +6,7 @@ const NoticeSchema = new mongoose.Schema(
     category: {
       type: String,
       required: true,
-      enum: ["Lost/Found", "Give to good hands", "Sell"],
+      enum: ["lost-found", "for-free", "sell"],
     },
     title: {
       type: String,
