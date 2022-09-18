@@ -182,23 +182,26 @@ module.exports.userUpdate = (req, res) => {
 
 module.exports.refreshTokens = async (req, res) => {
   const authorizationHeader = req.get("Authorization");
+ 
   if (authorizationHeader) {
     const reqRefreshToken = authorizationHeader.replace("Bearer ", "");
-
+     
     try {
-      const payload = jwt.verify(reqRefreshToken, JWT_REFRESH_SECRET_KEY);
-      const user = await User.findById(payload.user_id);
+      const {id} = jwt.verify(reqRefreshToken, JWT_REFRESH_SECRET_KEY);
+      const user = await User.findById(id);
+     
       if (!user) {
         throw new createError.NotFound("Invalid user");
       }
+     
       const newAccessToken = jwt.sign(
-        { user_id: user._id },
+        { id: user._id },
         JWT_ACCESS_SECRET_KEY,
         { expiresIn: "1h" }
       );
       const newRefreshToken = jwt.sign(
         {
-          user_id: user._id,
+          id: user._id,
         },
         JWT_REFRESH_SECRET_KEY,
         { expiresIn: "30d" }
@@ -217,10 +220,10 @@ module.exports.refreshTokens = async (req, res) => {
         },
       });
     } catch (err) {
-      throw new createError.Unauthorized("Not authorized");
+      throw new Error("Not authorized");
     }
   }
-  throw new createError.BadRequest("No token provided");
+  throw new Error("No token provided");
 };
 
 // Logout User
