@@ -8,9 +8,10 @@ const uploadCloud = require("../middlewares/uploadMiddleware.js");
 router.post(
   "/",
   authMiddleware,
-  uploadCloud.single("avatarURL"),
+  uploadCloud.single("image"),
   PetController.petRegister
 );
+
 router.delete("/:id", authMiddleware, PetController.petDelete);
 
 module.exports = router;

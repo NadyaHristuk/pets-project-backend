@@ -1,5 +1,5 @@
 const Pet = require("../models/Pet.model");
-const { User }= require("../models/User.model");
+const { User } = require("../models/User.model");
 
 module.exports.petRegister = async (req, res) => {
   const owner = req.user.id;

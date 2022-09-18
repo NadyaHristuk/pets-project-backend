@@ -1,7 +1,5 @@
 const Notice = require("../models/Notice.model");
-const User = require("../models/User.model");
-
-
+const { User } = require("../models/User.model");
 
 module.exports.noticeCategory = (req, res) => {
   Notice.find().then((doc) => {
@@ -25,14 +23,14 @@ module.exports.noticeCreate = (req, res) => {
   const owner = req.user._id;
   const noticeData = req.body;
   const data = req.file
-  ? { animals_photos: req.file.path, owner, ...noticeData }
-  : { owner, ...noticeData};
+    ? { imageUrl: req.file.path, owner, ...noticeData }
+    : { owner, ...noticeData };
   Notice.create(data)
     .then((notice) => {
       if (notice) {
         User.findByIdAndUpdate(
           owner,
-          { $push: { userNotices: notice._id } },
+          { $push: { ownNotices: notice._id } },
           { new: true }
         )
           .then((user) => {
@@ -62,7 +60,7 @@ module.exports.noticeDelete = (req, res) => {
     } else {
       User.findByIdAndUpdate(
         owner,
-        { $pull: { userNotices: req.params.id } },
+        { $pull: { ownNotices: req.params.id } },
         { new: true }
       )
         .then((user) => {
@@ -123,19 +121,20 @@ module.exports.noticeByID = (req, res) => {
 module.exports.noticeSelected = (req, res) => {
   const owner = req.user._id;
 
-  User.findById(owner, { userSelectedNotices: 1 })
-    .populate("userSelectedNotices")
+  User.findById(owner, { favoriteNotices: 1 })
+    .populate("favoriteNotices")
     .then((doc) => {
-      if (!doc) {
-        res.status(400).json({
+      const { favoriteNotices } = doc;
+      if (favoriteNotices.length === 0) {
+        return res.status(400).json({
           success: false,
           message: "Not found selected notice of user",
         });
       }
-      const { userSelectedNotices } = doc;
+
       res.status(200).json({
         success: true,
-        userSelectedNotices,
+        favoriteNotices,
       });
     });
 };
@@ -153,7 +152,7 @@ module.exports.noticeSelectedCreate = (req, res) => {
       } else {
         User.findByIdAndUpdate(
           owner,
-          { $push: { userSelectedNotices: notice._id } },
+          { $push: { favoriteNotices: notice._id } },
           { new: true }
         )
           .then((user) => {
@@ -183,7 +182,7 @@ module.exports.noticeSelectedDelete = (req, res) => {
     } else {
       User.findByIdAndUpdate(
         owner,
-        { $pull: { userSelectedNotices: req.params.id } },
+        { $pull: { favoriteNotices: req.params.id } },
         { new: true }
       )
         .then((user) => {
@@ -195,44 +194,5 @@ module.exports.noticeSelectedDelete = (req, res) => {
           throw new Error(err);
         });
     }
-  });
-};
-
-
-
-module.exports.saveFinance = (req, res) => {
-  const userId = req.user._id;
-
-  const newData = {
-    date: req.body.date,
-    type: req.body.type,
-    category: req.body.category,
-    comments: req.body.comments,
-    amount: req.body.amount,
-    balanceAfter: req.body.balanceAfter,
-    typeBalanceAfter: req.body.typeBalanceAfter,
-  };
-
-  UserFinance.findOneAndUpdate(
-    { userId },
-    {
-      $push: { data: newData },
-      totalBalance: newData.balanceAfter,
-      typeTotalBalance: newData.typeBalanceAfter,
-    },
-    { new: true, upsert: true }
-  ).then((doc, err) => {
-    if (err) {
-      res.status(400).json({
-        success: false,
-        message: "Not found finance data with this user ID",
-      });
-    }
-    res.status(200).json({
-      success: true,
-      message: "Data found with this ID",
-      user: { name: req.user.name, email: req.user.email },
-      finance: doc,
-    });
   });
 };
