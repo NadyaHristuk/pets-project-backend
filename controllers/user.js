@@ -45,6 +45,16 @@ module.exports.userRegister = (req, res, next) => {
         phone,
       });
       newUser.setPassword(password);
+      const payload = {
+        id: user._id,
+      };
+      const accessToken = jwt.sign(payload, JWT_ACCESS_SECRET_KEY, {
+        expiresIn: "1h",
+      });
+      const refreshToken = jwt.sign(payload, JWT_REFRESH_SECRET_KEY, {
+        expiresIn: "30d",
+      });
+  
 
       newUser.save().then((user) => {
         const {
@@ -71,6 +81,10 @@ module.exports.userRegister = (req, res, next) => {
           userPets,
           ownNotices,
           favoriteNotices,
+          data: {
+            accessToken,
+            refreshToken,
+          },
         };
 
         res.status(200).json({
