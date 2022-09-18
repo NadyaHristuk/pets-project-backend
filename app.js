@@ -25,11 +25,11 @@ app.use(logger(formatsLogger));
 app.use(cors(corsOptions));
 app.use(express.json());
 
-app.use("/api/users", usersRouter);
-app.use("/api/pets", petRouter);
-app.use("/api/notice", noticeRouter);
-app.use("/api/sponsors", sponsorsRouter);
-app.use("/api/categories", newsRouter);
+app.use("/user", usersRouter);
+app.use("/pet", petRouter);
+app.use("/notice", noticeRouter);
+app.use("/sponsors-info", sponsorsRouter);
+app.use("/news", newsRouter);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use((req, res) => {

@@ -5,7 +5,6 @@ const secret = process.env.SECRET;
 
 module.exports = {
   authMiddleware: async (req, res, next) => {
-    console.log("1111", req.headers);
     try {
       const { authorization } = req.headers;
       if (!authorization) {
@@ -14,28 +13,25 @@ module.exports = {
             "Please, provide a tokin in request authorization header"
           )
         );
-      }
-      console.log("nentoken");
+      }    
       const [, token] = authorization.split(" ");
-      console.log(token);
       if (!token) {
         next(new Unauthorized("Not authorized"));
       }
-      const user = jwt.decode(token, secret);
-      const userFind = await User.findById(user.id);
-      if (!userFind || token !== userFind.token) {
+      const { id } = jwt.decode(token, secret);   
+      const userFind = await User.findById(id);  
+      if (!userFind || token !== userFind.accessToken) {
         next(new Unauthorized("Not authorized"));
       }
       const TokenExpired = isTokenExpired(token);
-
       if (TokenExpired) {
         throw new Unauthorized("Token is expired");
       }
-      req.user = user;
+      req.user = userFind;
       next();
     } catch (error) {
       console.log(error);
-   
+
       next(new Unauthorized("Not authorized"));
     }
   },

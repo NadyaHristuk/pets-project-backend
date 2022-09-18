@@ -5,12 +5,12 @@ const { authMiddleware } = require("../middlewares/authMiddleware");
 const UserController = require("../controllers/user.js");
 const uploadCloud = require("../middlewares/uploadMiddleware.js");
 
-router.post("/user/register", UserController.userRegister);
-router.post("/user/login", UserController.userLogin);
-router.get("/user/refresh", UserController.refreshTokens);
-router.get("/user/info", authMiddleware, UserController.userInfo);
+router.post("/register", UserController.userRegister);
+router.post("/login", UserController.userLogin);
+router.get("/refresh", UserController.refreshTokens);
+router.get("/info", authMiddleware, UserController.userInfo);
 router.put(
-  "/user/update",
+  "/update",
   authMiddleware,
   uploadCloud.single("avatar"),
   UserController.userUpdate

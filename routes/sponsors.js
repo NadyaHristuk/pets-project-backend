@@ -3,6 +3,6 @@ const router = express.Router();
 
 const SponsorsController = require("../controllers/sponsor");
 
-router.get("/sponsors-info", SponsorsController.getSponsorsInfo);
+router.get("/", SponsorsController.getSponsorsInfo);
 
 module.exports = router;

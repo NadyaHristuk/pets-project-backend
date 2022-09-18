@@ -1,6 +1,6 @@
 const sponsors = require("../data/sponsors.json");
 
-// Get User data by Id
+// Get SponsorsInfo data
 module.exports.getSponsorsInfo = (req, res) => {
   res.status(200).json(sponsors);
 };

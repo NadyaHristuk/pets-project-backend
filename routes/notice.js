@@ -19,17 +19,17 @@ router.get("/notice/:id", NoticeController.noticeByID);
 router.get(
   "/notice/selected/",
   authMiddleware,
-  NoticeController.noticeSelOfUser
+  NoticeController.noticeSelected
 );
 router.post(
   "/notice/selected/:id",
   authMiddleware,
-  NoticeController.noticeSelCreate
+  NoticeController.noticeSelectedCreate
 );
 router.delete(
   "/notice/selected/:id",
   authMiddleware,
-  NoticeController.noticeSelDelete
+  NoticeController.noticeSelectedDelete
 );
 
 router.get("/notice/category", NoticeController.noticeCategory);

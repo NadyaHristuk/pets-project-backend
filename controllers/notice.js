@@ -1,25 +1,8 @@
 const Notice = require("../models/Notice.model");
 const User = require("../models/User.model");
 
-module.exports.noticeSelOfUser = (req, res) => {
-  const owner = req.user._id;
 
-  User.findById(owner, { userSelectedNotices: 1 })
-    .populate("userSelectedNotices")
-    .then((doc) => {
-      if (!doc) {
-        res.status(400).json({
-          success: false,
-          message: "Not found selected notice of user",
-        });
-      }
-      const { userSelectedNotices } = doc;
-      res.status(200).json({
-        success: true,
-        userSelectedNotices,
-      });
-    });
-};
+
 module.exports.noticeCategory = (req, res) => {
   Notice.find().then((doc) => {
     if (!doc) {
@@ -35,101 +18,6 @@ module.exports.noticeCategory = (req, res) => {
       notice: doc,
       category: ["Lost/Found", "Give to good hands", "Sell"],
     });
-  });
-};
-
-module.exports.noticeOfUser = (req, res) => {
-  const limit = req.limit;
-  const owner = req.user._id;
-  Notice.find({ owner }, null, { limit }).then((doc) => {
-    if (!doc) {
-      res.status(400).json({
-        success: false,
-        message: "Not found finance data with this user ID",
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      message: "Data found with this ID",
-      noticeOfUser: doc,
-    });
-  });
-};
-
-module.exports.noticeByID = (req, res) => {
-  const owner = req.user._id;
-  Notice.findOne({ _id: req.params.id, owner }).then((doc) => {
-    if (!doc) {
-      res.status(400).json({
-        success: false,
-        message: "Not found finance data with this user ID",
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      message: "Data found with this ID",
-      noticeByID: doc,
-    });
-  });
-};
-
-module.exports.noticeSelCreate = (req, res) => {
-  const owner = req.user._id;
-
-  Notice.findById(req.params.id)
-    .then((notice) => {
-      if (!notice) {
-        res.status(400).json({
-          success: false,
-          message: "Not found notice with this ID",
-        });
-      } else {
-        User.findByIdAndUpdate(
-          owner,
-          { $push: { userSelectedNotices: notice._id } },
-          { new: true }
-        )
-          .then((user) => {
-            if (user) {
-              res.status(201).json({ success: true, notice });
-            }
-          })
-          .catch((err) => {
-            throw new Error(err);
-          });
-      }
-    })
-    .catch((err) =>
-      res.status(400).json({ success: false, error: err, message: err.message })
-    );
-};
-
-module.exports.noticeSelDelete = (req, res) => {
-  const owner = req.user._id;
-
-  Notice.findById(req.params.id).then((doc) => {
-    if (!doc) {
-      res.status(400).json({
-        success: false,
-        message: "Not found notice with this ID",
-      });
-    } else {
-      User.findByIdAndUpdate(
-        owner,
-        { $pull: { userSelectedNotices: req.params.id } },
-        { new: true }
-      )
-        .then((user) => {
-          if (user) {
-            res.status(201).json({ success: true, notice: doc });
-          }
-        })
-        .catch((err) => {
-          throw new Error(err);
-        });
-    }
   });
 };
 
@@ -192,6 +80,123 @@ module.exports.noticeDelete = (req, res) => {
     });
   });
 };
+
+module.exports.noticeOfUser = (req, res) => {
+  const limit = req.limit;
+  const owner = req.user._id;
+  Notice.find({ owner }, null, { limit }).then((doc) => {
+    if (!doc) {
+      res.status(400).json({
+        success: false,
+        message: "Not found finance data with this user ID",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Data found with this ID",
+      noticeOfUser: doc,
+    });
+  });
+};
+
+module.exports.noticeByID = (req, res) => {
+  const owner = req.user._id;
+  Notice.findOne({ _id: req.params.id, owner }).then((doc) => {
+    if (!doc) {
+      res.status(400).json({
+        success: false,
+        message: "Not found finance data with this user ID",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Data found with this ID",
+      noticeByID: doc,
+    });
+  });
+};
+
+module.exports.noticeSelected = (req, res) => {
+  const owner = req.user._id;
+
+  User.findById(owner, { userSelectedNotices: 1 })
+    .populate("userSelectedNotices")
+    .then((doc) => {
+      if (!doc) {
+        res.status(400).json({
+          success: false,
+          message: "Not found selected notice of user",
+        });
+      }
+      const { userSelectedNotices } = doc;
+      res.status(200).json({
+        success: true,
+        userSelectedNotices,
+      });
+    });
+};
+
+module.exports.noticeSelectedCreate = (req, res) => {
+  const owner = req.user._id;
+
+  Notice.findById(req.params.id)
+    .then((notice) => {
+      if (!notice) {
+        res.status(400).json({
+          success: false,
+          message: "Not found notice with this ID",
+        });
+      } else {
+        User.findByIdAndUpdate(
+          owner,
+          { $push: { userSelectedNotices: notice._id } },
+          { new: true }
+        )
+          .then((user) => {
+            if (user) {
+              res.status(201).json({ success: true, notice });
+            }
+          })
+          .catch((err) => {
+            throw new Error(err);
+          });
+      }
+    })
+    .catch((err) =>
+      res.status(400).json({ success: false, error: err, message: err.message })
+    );
+};
+
+module.exports.noticeSelectedDelete = (req, res) => {
+  const owner = req.user._id;
+
+  Notice.findById(req.params.id).then((doc) => {
+    if (!doc) {
+      res.status(400).json({
+        success: false,
+        message: "Not found notice with this ID",
+      });
+    } else {
+      User.findByIdAndUpdate(
+        owner,
+        { $pull: { userSelectedNotices: req.params.id } },
+        { new: true }
+      )
+        .then((user) => {
+          if (user) {
+            res.status(201).json({ success: true, notice: doc });
+          }
+        })
+        .catch((err) => {
+          throw new Error(err);
+        });
+    }
+  });
+};
+
+
 
 module.exports.saveFinance = (req, res) => {
   const userId = req.user._id;
