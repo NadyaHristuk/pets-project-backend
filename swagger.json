@@ -1,0 +1,914 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+      "version": "1.0.0",
+      "title": "Swagger test",
+      "description": "Showing off swagger-ui-express",
+      "license": {
+        "name": "MIT",
+        "url": "https://opensource.org/licenses/MIT"
+      }
+    },
+    "consumes": ["application/json", "multipart/form-data"],
+    "produces": ["application/json", "multipart/form-data"],
+    "servers": [{ "url": "http://wallet-project-group-1.herokuapp.com" }, { "url": "http://localhost:3001" }],
+    "tags": [
+      {
+        "name": "UserAuthInfo",
+        "description": "Authorization and info endpoints"
+      },
+      {
+        "name": "Transactions",
+        "description": "Transaction endpoints"
+      },
+      {
+        "name": "Categories",
+        "description": "Category endpoints"
+      },
+      {
+        "name": "Developers",
+        "description": "Developers endpoints"
+      }
+    ],
+    "paths": {
+      "/users/signup": {
+        "post": {
+          "tags": ["UserAuthInfo"],
+          "summary": "User registration",
+          "parameters": [],
+          "requestBody": {
+            "description": "Registration's object",
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationRequest"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Successful operation",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RegistrationResponse"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Not found",
+              "content": {}
+            },
+            "409": {
+              "description": "Email in use",
+              "content": {}
+            },
+            "500": {
+              "description": "Server error",
+              "content": {}
+            }
+          }
+        }
+      },
+      "/users/login": {
+        "post": {
+          "tags": ["UserAuthInfo"],
+          "summary": "User authentication",
+           "parameters": [],
+          "requestBody": {
+            "description": "Authentication's object",
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginRequest"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Successful operation",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/LoginResponse"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Email doesn't exist / Password is wrong",
+              "content": {}
+            },
+            "404": {
+              "description": "Not found",
+              "content": {}
+            },
+            "500": {
+              "description": "Server error",
+              "content": {}
+            }
+          }
+        }
+      },
+      "/users/logout": {
+        "get": {
+          "tags": ["UserAuthInfo"],
+          "summary": "Logout",
+          "security": [{ "Bearer": [] }],
+          "parameters": [],
+          "responses": {
+            "204": {
+              "description": "Successful operation",
+              "content": {}
+            },
+            "404": {
+              "description": "Not found",
+              "content": {}
+            },
+            "500": {
+              "description": "Server error",
+              "content": {}
+            }  
+          }
+        }
+      },
+      "/users/current": {
+        "get": {
+          "tags": ["UserAuthInfo"],
+          "summary": "Get current user info",
+          "parameters": [],
+          "security": [{ "Bearer": [] }],
+          "responses": {
+            "200": {
+              "description": "Successful operation",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/GetUserInfo"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Not authorized (invalid access token)",
+              "content": {}
+            },
+            "404": {
+              "description": "Not found",
+              "content": {}
+            },
+            "500": {
+              "description": "Server error",
+              "content": {}
+            }
+          }
+       }
+      },
+      "/categories":{
+        "get": {
+          "tags": ["Categories"],
+          "summary": "Get list of categories",
+          "parameters": [],
+          "security": [{ "Bearer": [] }],
+          "responses": {
+            "200": {
+              "description": "Successful operation",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/GetAllCategories"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Not authorized (invalid access token)",
+              "content": {}
+            },
+            "404": {
+              "description": "Not found",
+              "content": {}
+            },
+            "500": {
+              "description": "Server error",
+              "content": {}
+            }}}
+      },
+      "/categories/add":{
+        "post": {
+          "tags": ["Categories"],
+          "summary": "Add new category",
+           "parameters": [],
+           "security": [{ "Bearer": [] }],
+          "requestBody": {
+            "description": "Authentication's object",
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddCategoryRequest"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Successful operation",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/AddCategoryResponse"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Not found",
+              "content": {}
+            },
+            "500": {
+              "description": "Server error",
+              "content": {}
+            }
+          }
+        }
+      },
+      "/developers":{
+        "get": {
+          "tags": ["Developers"],
+          "summary": "Hire all these developers",
+          "parameters": [],
+          "security": [{ "Bearer": [] }],
+          "responses": {
+            "200": {
+              "description": "Successful operation",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HireAllDevelopers"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Not authorized (invalid access token)",
+              "content": {}
+            },
+            "404": {
+              "description": "Not found",
+              "content": {}
+            },
+            "500": {
+              "description": "Server error",
+              "content": {}
+            }}}
+      },
+      "/developers/add":{
+        "post": {
+          "tags": ["Developers"],
+          "summary": "Add new developer to you company",
+           "parameters": [],
+           "security": [{ "Bearer": [] }],
+          "requestBody": {
+            "description": "Authentication's object",
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddDevRequest"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Successful operation",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/AddDevResponse"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad Request",
+              "content": {}
+            },
+            "404": {
+              "description": "Not found",
+              "content": {}
+            },
+            "500": {
+              "description": "Server error",
+              "content": {}
+            }
+          }
+        }
+      },
+      "/transactions":{
+        "get": {
+          "tags": ["Transactions"],
+          "summary": "Get list of transactions",
+          "parameters": [
+            {
+              "name": "limit",
+              "in": "query",
+              "description": "limit of transactions per page",
+              "required": true,
+              "default": 30,
+              "schema": {
+                "type": "integer"
+              }
+            },
+            {
+              "name": "page",
+              "in": "query",
+              "description": "number of pages for transactions output",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "security": [{ "Bearer": [] }],
+          "responses": {
+            "200": {
+              "description": "Successful operation",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/GetTransactions"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Not found",
+              "content": {}
+            },
+            "500": {
+              "description": "Server error",
+              "content": {}
+            }}}
+      },
+      "/transactions/create":{
+        "post": {
+          "tags": ["Transactions"],
+          "summary": "Create new transaction",
+           "parameters": [],
+           "security": [{ "Bearer": [] }],
+          "requestBody": {
+            "description": "Authentication's object",
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateTransactionRequest"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Successful operation",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/CreateTransactionResponse"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad Request",
+              "content": {}
+            },
+            "404": {
+              "description": "Not found",
+              "content": {}
+            },
+            "500": {
+              "description": "Server error",
+              "content": {}
+            }
+          }
+        }
+      },
+      "/transactions/statistics":{
+        "get": {
+          "tags": ["Transactions"],
+          "summary": "Get user transaction statistics",
+          "parameters": [
+            {
+              "name": "month",
+              "in": "query",
+              "description": "choose month for stats info",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            },
+            {
+              "name": "year",
+              "in": "query",
+              "description": "choose year for stats info",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "security": [{ "Bearer": [] }],
+          "responses": {
+            "200": {
+              "description": "Successful operation",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/GetStatsInfo"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Not found",
+              "content": {}
+            },
+            "500": {
+              "description": "Server error",
+              "content": {}
+            }}}
+      }
+    },
+    "components": {
+      "schemas": {
+        "RegistrationRequest": {
+          "type": "object",
+          "required": ["name", "email", "password"],
+          "properties": {
+            "name": {
+                "type": "string",
+                "description": "User's name",
+                "format": "name"
+              },
+
+            "email": {
+              "type": "string",
+              "description": "User's email",
+              "format": "email"
+            },
+            "password": {
+              "type": "string",
+              "description": "User's password",
+              "example": "qwerty123"
+            }
+          }
+        },
+        "RegistrationResponse": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string",
+                    "description": "User's token"
+                  },
+                "user":{
+                  "type": "object",
+                  "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "User's name"
+                      },
+                        "email": {
+                        "type": "string",
+                        "description": "User's email",
+                        "format": "email"
+                      }     
+                }
+            }
+        },
+          "example": 
+            { "token":"xxxxx.yyyyy.zzzzz",
+                "user":{
+                    "name": "One",
+                    "email": "1@gmail.com"  
+                    
+                }}
+        },
+        "LoginRequest": {
+          "required": ["email", "password"],
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "description": "User's email",
+              "format": "email"
+            },
+            "password": {
+              "type": "string",
+              "description": "User's password",
+              "example": "qwerty123"
+            }
+          }
+        },
+        "LoginResponse": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string",
+                    "description": "User's token"
+                  },
+                "user":{
+                  "type": "object",
+                  "properties":{
+                      "name": {
+                      "type": "string",
+                      "description": "User's name"
+                    },
+                        "email": {
+                        "type": "string",
+                        "description": "User's email",
+                        "format": "email"
+                    },
+                    "balance": {
+                      "type": "number",
+                      "description": "User's balance"
+                }}}
+            },
+          "example": 
+            { "token":"xxxxx.yyyyy.zzzzz",
+                "user":{
+                  "name": "One", 
+                  "email": "1@gmail.com", 
+                  "balance": "24000.05" 
+                }} 
+        },
+         "GetUserInfo":{
+          "type": "object",
+          "properties": {
+              "user":{
+                "type": "object",
+                "properties":{
+                    "name": {
+                      "type": "string",
+                      "description": "User's name"
+                    },
+                    "email": {
+                      "type": "string",
+                      "description": "User's email",
+                      "format": "email"
+                    },
+                    "balance": {
+                      "type": "number",
+                      "description": "User's balance"
+                    }}}
+                  },
+              "example": 
+              {"user":{
+                  "name": "One", 
+                  "email": "1@gmail.com", 
+                  "balance": "24000.05" 
+                }} 
+        },
+         "GetAllCategories":{
+          "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+            "value": {
+              "type": "string",
+              "description": "User's category"
+            },
+            "lable": {
+              "type": "string",
+              "description": "User's category"
+            },
+          "type": {
+            "type": "boolean",
+            "description": "true/false"
+          }}
+        },
+        "example": [
+          { "...": "...", "... ": "..." },
+          { "...": "...", "....": "..." }
+        ]
+        },
+        "AddCategoryRequest":{
+          "required": ["value", "lable", "type"],
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "string",
+                "description": "User's category"
+              },
+              "label": {
+                "type": "string",
+                "description": "User's category"
+              },
+            "type": {
+              "type": "boolean",
+              "description": "true/false"
+            }
+            }
+        },
+        "AddCategoryResponse":{
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string",
+              "description": "User's category"
+            },
+            "label": {
+              "type": "string",
+              "description": "User's category"
+              },
+            "type": {
+              "type": "boolean",
+              "description": "true/false - income/expences"
+          }},
+          "example": {
+            "value": "CosmoFly",
+            "label": "CosmoFly",
+            "type": false
+          }
+        },
+        "HireAllDevelopers":{
+          "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+            "name": {
+              "type": "string",
+              "description": "Developer's name"
+            },
+            "role": {
+              "type": "string",
+              "description": "Developer's functionality"
+            },
+          "linkedin": {
+            "type": "string",
+            "description": "link to Linkedin"
+          },
+          "github": {
+            "type": "string",
+            "description": "link to GitHub"
+          },
+          "photo": {
+            "type": "string",
+            "description": "link to developer's strange photo"
+          }}
+        },
+        "example": [
+          { "name": "Catman", "role": "machine à code", "....": "..." },
+          { "...": "...", "....": "..." }
+        ]
+        },
+        "AddDevRequest":{
+          "required": ["name", "role", "linkedin", "github", "photo"],
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Developer's name"
+            },
+            "role": {
+              "type": "string",
+              "description": "Developer's functionality"
+            },
+          "linkedin": {
+            "type": "string",
+            "description": "link to Linkedin"
+          },
+          "github": {
+            "type": "string",
+            "description": "link to GitHub"
+          },
+          "photo": {
+            "type": "string",
+            "description": "link to developer's strange photo"
+          }},
+          "example": {
+            "name": "Kitty Codder",
+            "role": "belle machine à code",
+            "linkedin": "https://www.linkedin.com/in/kitty-codder-bb52569/",
+            "github":"https://github.com/KittyCodder/",
+            "photo": "https://inekescheffers.com/girl-code/1-logo_bovenaan_achtergrond-1/"
+          }
+        },
+        "AddDevResponse":{
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Developer's name"
+            },
+            "role": {
+              "type": "string",
+              "description": "Developer's functionality"
+            },
+          "linkedin": {
+            "type": "string",
+            "description": "link to Linkedin"
+          },
+          "github": {
+            "type": "string",
+            "description": "link to GitHub"
+          },
+          "photo": {
+            "type": "string",
+            "description": "link to developer's strange photo"
+          }},
+          "example": {
+            "name": "Kitty Codder",
+            "role": "belle machine à code",
+            "linkedin": "https://www.linkedin.com/in/kitty-codder-bb52569/",
+            "github":"https://github.com/KittyCodder/",
+            "photo": "https://inekescheffers.com/girl-code/1-logo_bovenaan_achtergrond-1/"
+          }
+        },
+        "GetTransactions":{
+          "type": "array",
+          "items": {
+              "type": "object",
+              "properties": {
+          "month": {
+            "type": "integer",
+            "description": "month of the transaction"
+          },
+          "year": {
+            "type": "integer",
+            "description": "year of the transaction"
+          },
+          "date": {
+            "type": "integer",
+            "description": "day of the transaction"
+          },
+        "type": {
+          "type": "boolean",
+          "description": "true/false - income/expense"
+        },
+        "category": {
+          "type": "string",
+          "description": "category of the transaction"
+        },
+        "comment": {
+          "type": "string",
+          "description": "additional info about the transaction"
+        },
+        "sum": {
+          "type": "number",
+          "description": "amount of the transaction"
+        },
+        "balance": {
+          "type": "number",
+          "description": "balance"
+        }
+      }
+      },
+      "example": [
+        { "month": "02", "year": "2022",  "date": "25" },
+        { "...": "...", "....": "..." }
+      ] 
+        },
+        "CreateTransactionRequest":{
+          "required": ["month", "year", "type", "category", "comment", "sum"],
+          "type": "object",
+          "properties": {
+            "month": {
+              "type": "integer",
+              "description": "month of the transaction"
+            },
+            "year": {
+              "type": "integer",
+              "description": "year of the transaction"
+            },
+            "date": {
+              "type": "string",
+              "description": "day of the transaction"
+            },
+          "type": {
+            "type": "boolean",
+            "description": "true/false - income/expense"
+          },
+          "category": {
+            "type": "string",
+            "description": "category of the transaction"
+          },
+          "sum": {
+            "type": "number",
+            "description": "amount of the transaction"
+          }
+        },
+          "example": {
+            "month": 2,
+            "year": 2022,
+            "date": 25,
+            "type":"true",
+            "category":"Regular income",
+            "sum": 30578
+          }
+        },
+        "CreateTransactionResponse":{
+          "type": "object",
+          "properties": {
+            "month": {
+              "type": "integer",
+              "description": "month of the transaction"
+            },
+            "year": {
+              "type": "integer",
+              "description": "year of the transaction"
+            },
+            "date": {
+              "type": "integer",
+              "description": "day of the transaction"
+            },
+          "type": {
+            "type": "boolean",
+            "description": "true/false - income/expense"
+          },
+          "category": {
+            "type": "string",
+            "description": "category of the transaction"
+          },
+          "comment": {
+            "type": "string",
+            "description": "additional info about the transaction"
+          },
+          "sum": {
+            "type": "number",
+            "description": "amount of the transaction"
+          }},
+          "example": {
+            "month": "02",
+            "year": "2022",
+            "date": "25",
+            "type":"true",
+            "comment": "my fist incom as a developer",
+            "sum": "30578,77"
+          }
+        },
+        "GetStatsInfo":{
+          "type": "object",
+          "properties": {
+            "categories": {
+              "type": "array",
+              "items": {
+                  "type": "object",
+                  "properties": {
+              "_id": {
+                "type": "string",
+                "description": "User's category"
+              },
+              "total": {
+                "type": "number",
+                "description": "Total amount spent"
+              }}
+              }
+            },
+            "totalSpent": {
+              "type": "array",
+              "items": {
+                  "type": "object",
+                  "properties": {
+                      "spent": {
+                      "type": "number",
+                      "description": "Total amount spent"
+                    }}
+                    }
+            },
+            "totalIncome": {
+              "type": "array",
+              "items": {
+                  "type": "object",
+                  "properties": {
+                      "totalIncome": {
+                      "type": "number",
+                      "description": "Total income"
+                    }}
+                    }
+            }},
+          "example": {
+            "month": "02",
+            "year": "2022",
+            "date": "25",
+            "type":"true",
+            "comment": "my fist incom as a developer",
+            "sum": "30578,77"
+          }
+        }
+      },
+      "securitySchemes": {
+        "Bearer": {
+          "type": "http",
+          "scheme": "bearer",
+          "bearerFormat": "JWT"
+        }
+      }
+    }
+  }

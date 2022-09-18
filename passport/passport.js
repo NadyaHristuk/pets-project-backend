@@ -1,7 +1,7 @@
 const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const LocalStrategy = require("passport-local").Strategy;
-const User = require("../../models/User.model");
+const { User } = require("../../models/User.model");
 
 require("dotenv").config();
 
@@ -9,8 +9,8 @@ require("dotenv").config();
 module.exports = (passport) => {
   const opts = {};
   opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-  opts.secretOrKey = process.env.ACCESS_TOKEN_SECRET;
-
+  opts.secretOrKey = process.env.JWT_ACCESS_SECRET_KEY;
+console.log("reer");
   passport.use(
     new JwtStrategy(opts, function (jwt_payload, done) {
       User.findById(jwt_payload.id, function (err, user) {
@@ -44,9 +44,7 @@ module.exports = (passport) => {
       },
       function (email, password, cb) {
         //Assume there is a DB module providing a global UserModel
-        return User.findOne({
-          email,
-        })
+        return User.findOne({ email })
           .then((user) => {
             if (!user) {
               return cb(null, false, {
@@ -60,7 +58,7 @@ module.exports = (passport) => {
                 });
               }
 
-                       if (isMatch && !err) {
+              if (isMatch && !err) {
                 return cb(null, user, {
                   message: "Logined Successfully",
                 });
