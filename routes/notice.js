@@ -22,7 +22,7 @@ router.delete(
 router.post(
   "/",
   authMiddleware,
-  uploadCloud.single("image"),
+  uploadCloud.single("imageUrl"),
   NoticeController.noticeCreate
 );
 router.delete("/:id", authMiddleware, NoticeController.noticeDelete);

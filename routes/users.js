@@ -9,10 +9,10 @@ router.post("/register", UserController.userRegister);
 router.post("/login", UserController.userLogin);
 router.post("/refresh", UserController.refreshTokens);
 router.get("/info", authMiddleware, UserController.userInfo);
-router.put(
+router.patch(
   "/update",
   authMiddleware,
-  uploadCloud.single("avatar"),
+  uploadCloud.single("userImgUrl"),
   UserController.userUpdate
 );
 
