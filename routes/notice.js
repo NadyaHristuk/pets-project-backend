@@ -25,11 +25,8 @@ router.post(
   uploadCloud.single("imageUrl"),
   NoticeController.noticeCreate
 );
+router.get("/:id", NoticeController.noticeByID);
 router.delete("/:id", authMiddleware, NoticeController.noticeDelete);
 router.get("/:limit", authMiddleware, NoticeController.noticeOfUser);
-router.get("/:id", NoticeController.noticeByID);
-
-
-
 
 module.exports = router;

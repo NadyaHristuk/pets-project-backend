@@ -101,8 +101,7 @@ module.exports.noticeOfUser = (req, res) => {
 };
 
 module.exports.noticeByID = (req, res) => {
-  const owner = req.user._id;
-  Notice.findOne({ _id: req.params.id, owner }).then((doc) => {
+  Notice.findOne({ _id: req.params.id}).then((doc) => {
     if (!doc) {
       res.status(400).json({
         success: false,
