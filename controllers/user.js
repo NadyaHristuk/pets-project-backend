@@ -36,7 +36,7 @@ module.exports.userRegister = (req, res, next) => {
     const { name, email, password, city, phone } = req.body;
     User.findOne({ email }).then((user) => {
       if (user) {
-        res.status(400).json({
+        res.status(409).json({
           success: false,
           message: `User with email ${email} already exist`,
         });
@@ -89,7 +89,7 @@ module.exports.userRegister = (req, res, next) => {
           },
         };
 
-        res.status(200).json({
+        res.status(201).json({
           success: true,
           message: "Successfully created new user. You can Login",
           user: userData,
@@ -107,13 +107,19 @@ module.exports.userLogin = async (req, res, next) => {
     const { error } = joiLoginSchema.validate(req.body);
 
     if (error) {
-      throw new createError.BadRequest(error.message);
+      res.status(409).json({
+        success: false,
+        message: error.message,
+      });
     }
     const { email, password } = req.body;
     const user = await User.findOne({ email });
 
     if (!user || !user.comparePassword(password)) {
-      throw new createError.Unauthorized("Email or password is wrong");
+      res.status(401).json({
+        success: false,
+        message: "Email doesn't exist / Password is wrong",
+      });
     }
     const payload = {
       id: user._id,
@@ -164,7 +170,7 @@ module.exports.userUpdate = (req, res) => {
   const id = req.user._id;
 
   const sendError = () => {
-    res.status(400);
+    res.status(401);
     res.json({
       status: "error",
       text: "there is no such user",
