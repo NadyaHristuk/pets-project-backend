@@ -187,11 +187,11 @@ module.exports.userUpdate = (req, res) => {
       user: newUser,
     });
   };
- 
-  const data = !!req.file
+
+  const data = req.file
     ? { userImgUrl: req.file.path, ...updateData }
     : { ...updateData };
- 
+
   User.findByIdAndUpdate(id, data, { new: true }).then((result) => {
     sendResponse(result);
   });
@@ -223,10 +223,9 @@ module.exports.refreshTokens = async (req, res) => {
       );
       res.json({
         status: "success",
-        code: 200,
         data: {
-           accessToken,
-           refreshToken,
+          accessToken,
+          refreshToken,
         },
       });
     } catch (err) {
@@ -237,9 +236,8 @@ module.exports.refreshTokens = async (req, res) => {
 };
 
 // Logout User
-// module.exports.userLogout = (req, res) => {
-
-//   res.status(200).json({
-//     message: "User successfully logout",
-//   });
-// };
+module.exports.userLogout = (req, res) => {
+  res.status(200).json({
+    message: "User successfully logout",
+  });
+};

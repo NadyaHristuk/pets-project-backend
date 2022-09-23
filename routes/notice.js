@@ -7,6 +7,16 @@ const { authMiddleware } = require("../middlewares/authMiddleware");
 const uploadCloud = require("../middlewares/uploadMiddleware.js");
 
 router.get("/category", NoticeController.noticeCategory);
+router.get("/:id", NoticeController.noticeByID);
+router.post(
+  "/",
+  authMiddleware,
+  uploadCloud.single("imageUrl"),
+  NoticeController.noticeCreate
+);
+router.delete("/:id", authMiddleware, NoticeController.noticeDelete);
+router.get("/:limit", authMiddleware, NoticeController.noticeOfUser);
+
 router.get("/selected/", authMiddleware, NoticeController.noticeSelected);
 router.post(
   "/selected/:id",
@@ -18,15 +28,5 @@ router.delete(
   authMiddleware,
   NoticeController.noticeSelectedDelete
 );
-
-router.post(
-  "/",
-  authMiddleware,
-  uploadCloud.single("imageUrl"),
-  NoticeController.noticeCreate
-);
-router.get("/:id", NoticeController.noticeByID);
-router.delete("/:id", authMiddleware, NoticeController.noticeDelete);
-router.get("/:limit", authMiddleware, NoticeController.noticeOfUser);
 
 module.exports = router;

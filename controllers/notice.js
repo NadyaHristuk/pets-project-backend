@@ -101,7 +101,7 @@ module.exports.noticeOfUser = (req, res) => {
 };
 
 module.exports.noticeByID = (req, res) => {
-  Notice.findOne({ _id: req.params.id}).then((doc) => {
+  Notice.findOne({ _id: req.params.id }).then((doc) => {
     if (!doc) {
       res.status(400).json({
         success: false,

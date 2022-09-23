@@ -15,5 +15,6 @@ router.patch(
   uploadCloud.single("userImgUrl"),
   UserController.userUpdate
 );
+router.get("/logout", authMiddleware, UserController.userLogout);
 
 module.exports = router;
