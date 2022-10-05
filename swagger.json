@@ -256,6 +256,35 @@
           }
         }
       }
+    },
+    "/sponsors-info": {
+      "get": {
+        "tags": [
+          "Sponsors-info"
+        ],
+        "summary": "Get list of sponsors",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetSponsorsInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }
     }
   },
   "components": {
@@ -560,38 +589,80 @@
           "favoriteNotices": []
         }
       },
-      "---GetUserInfo": {
-        "type": "object",
-        "properties": {
-          "user": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string",
-                "description": "User's name"
-              },
-              "email": {
-                "type": "string",
-                "description": "User's email",
-                "format": "email"
-              },
-              "balance": {
-                "type": "number",
-                "description": "User's balance"
+      "GetSponsorsInfo": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string"
+            },
+            "addressUrl": {
+              "type": "string"
+            },
+            "address": {
+              "type": "string"
+            },
+            "workDays": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "isOpen": {
+                    "type": "boolean"
+                  },
+                  "from": {
+                    "type": "string"
+                  },
+                  "to": {
+                    "type": "string"
+                  }
+                }
               }
             }
           }
         },
         "example": {
-          "name": "One",
-          "email": "1@gmail.com",
-          "city": "Kiev",
-          "phone": 3809739345679,
-          "birthday": null,
-          "userImgUrl": null,
-          "userPets": [],
-          "ownNotices": [],
-          "favoriteNotices": []
+          "title": "some text....",
+          "url": "https://www.....",
+          "addressUrl": "https://.",
+          "address": "some text....",
+          "workDays": [
+            {
+              "isOpen": true,
+              "from": "11:00",
+              "to": "16:00"
+            }
+          ]
+        }
+      },
+      "GetNews": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "date": {
+              "type": "string"
+            }
+          }
+        },
+        "example": {
+          "title": "some text....",
+          "url": "https://www.....",
+          "description": "some text....",
+          "date": "2022-08-12T00:00:00.000Z"
         }
       },
       "GetAllNotice": {
