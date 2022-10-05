@@ -502,6 +502,86 @@
         }
       }
     },
+    "/pet": {
+      "post": {
+        "tags": [
+          "Pet"
+        ],
+        "summary": "Post selected notice",
+        "parameters": [],
+        "requestBody": {
+          "description": "Notece's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PetRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PetResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/pet/{id}": {
+      "delete": {
+        "tags": [
+          "Pet"
+        ],
+        "summary": "Delete selected notice",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "description": "The Notice ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PetResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }
+    },
     "/notice": {
       "get": {
         "tags": [
@@ -660,7 +740,7 @@
           "userPets": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/AddPetRequest"
+              "$ref": "#/components/schemas/PetResponse"
             }
           },
           "ownNotices": {
@@ -755,7 +835,7 @@
           "userPets": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/AddPetRequest"
+              "$ref": "#/components/schemas/PetResponse"
             }
           },
           "ownNotices": {
@@ -825,40 +905,6 @@
         }
       },
       "GetUserInfo": {
-        "type": "object",
-        "properties": {
-          "user": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string",
-                "description": "User's name"
-              },
-              "email": {
-                "type": "string",
-                "description": "User's email",
-                "format": "email"
-              },
-              "balance": {
-                "type": "number",
-                "description": "User's balance"
-              }
-            }
-          }
-        },
-        "example": {
-          "name": "One",
-          "email": "1@gmail.com",
-          "city": "Kiev",
-          "phone": 3809739345679,
-          "birthday": null,
-          "userImgUrl": null,
-          "userPets": [],
-          "ownNotices": [],
-          "favoriteNotices": []
-        }
-      },
-      "AddPetRequest": {
         "type": "object",
         "properties": {
           "user": {
@@ -1280,12 +1326,6 @@
           },
           "user": {
             "$ref": "#/components/schemas/GetUserInfo"
-          },
-          "category": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
           }
         },
         "example": {
@@ -1310,6 +1350,111 @@
             "userNotices": [
               "6302828cedee5dcf51e15c72"
             ]
+          }
+        }
+      },
+      "PetRequest": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "serSelectedNotices": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "birthdate": {
+                  "type": "string"
+                },
+                "breed": {
+                  "type": "string"
+                },
+                "avatarURL": {
+                  "type": "string"
+                },
+                "comments": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "category": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "example": {
+          "name": "Zuza11111",
+          "birthdate": "2018-04-13",
+          "breed": "kvolik1",
+          "avatarURL": "image.jpg",
+          "comments": "it is kvolik1"
+        }
+      },
+      "PetResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "pet": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string"
+              },
+              "owner": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "birthdate": {
+                "type": "string"
+              },
+              "breed": {
+                "type": "string"
+              },
+              "avatarURL": {
+                "type": "string"
+              },
+              "comments": {
+                "type": "string"
+              },
+              "createdAt": {
+                "type": "string"
+              },
+              "updatedAt": {
+                "type": "string"
+              },
+              "__v": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        "example": {
+          "success": true,
+          "pet": {
+            "owner": "62ff62db76172b42dd276f3a",
+            "name": "Zuza11111",
+            "birthdate": "2018-04-13",
+            "breed": "kvolik1",
+            "avatarURL": "https://res.cloudinary.com/nafin13/image/upload/v1661108986/lwxrkglps5dmaa2xxoiv.jpg",
+            "comments": "it is kvolik1",
+            "_id": "630282faedee5dcf51e15c78",
+            "createdAt": "2022-08-21T19:09:46.069Z",
+            "updatedAt": "2022-08-21T19:09:46.069Z",
+            "__v": 0
           }
         }
       }
