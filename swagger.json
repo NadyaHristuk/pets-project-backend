@@ -40,7 +40,7 @@
     }
   ],
   "paths": {
-    "/users/register": {
+    "/user/register": {
       "post": {
         "tags": [
           "UserAuth"
@@ -84,7 +84,7 @@
         }
       }
     },
-    "/users/login": {
+    "/user/login": {
       "post": {
         "tags": [
           "UserAuth"
@@ -128,7 +128,7 @@
         }
       }
     },
-    "/users/logout": {
+    "/user/logout": {
       "get": {
         "tags": [
           "UserAuth"
@@ -156,7 +156,7 @@
         }
       }
     },
-    "/users/refresh": {
+    "/user/refresh": {
       "post": {
         "tags": [
           "UserAuth"
@@ -190,7 +190,7 @@
         }
       }
     },
-    "/users/info": {
+    "/user/info": {
       "get": {
         "tags": [
           "UserAuth"
@@ -228,7 +228,7 @@
         }
       }
     },
-    "/users/update": {
+    "/user/update": {
       "patch": {
         "tags": [
           "UserAuth"
