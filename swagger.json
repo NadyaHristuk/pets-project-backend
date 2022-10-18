@@ -527,7 +527,7 @@
         "tags": [
           "Pet"
         ],
-        "summary": "Post selected notice",
+        "summary": "Post pet",
         "security": [
           {
             "Bearer": []
@@ -572,7 +572,7 @@
         "tags": [
           "Pet"
         ],
-        "summary": "Delete selected notice",
+        "summary": "Delete selected pet",
         "security": [
           {
             "Bearer": []
@@ -644,7 +644,50 @@
             "content": {}
           }
         }
-      }
+      },     
+      "post": {
+        "tags": [
+          "Notice"
+        ],
+        "summary": "Post notice",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "description": "Notece's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PetRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PetResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }    
     },
     "/sponsors-info": {
       "get": {
@@ -1145,9 +1188,7 @@
             "type": "string"
           },
           "notice": {
-            "type": "array",
-            "items": {
-              "type": "object",
+            "type": "object",
               "properties": {
                 "_id": {
                   "type": "string"
@@ -1185,14 +1226,14 @@
                 "__v": {
                   "type": "number"
                 }
-              }
+              }              
             }
           }
         },
         "example": {
           "success": true,
           "message": "Data found with this ID",
-          "notice": {
+          "notice":[ {
             "_id": "63029a9e67447e95c6d80cee",
             "type_of_pet": "shinshila",
             "animals_photos": "https://res.cloudinary.com/nafin13/image/upload/v1661115037/ow7dsa4ifrr7ubnwqtj7.jpg",
@@ -1205,7 +1246,20 @@
             "createdAt": "2022-08-21T20:50:38.508Z",
             "updatedAt": "2022-08-21T20:50:38.508Z",
             "__v": 0
-          }
+          }, {
+            "_id": "63029a9e67447e95c6d81cee",
+            "type_of_pet": "shinshila1",
+            "animals_photos": "https://res.cloudinary.com/nafin13/image/upload/v1661115037/ow7dsa4ifrr7ubnwqtj7.jpg",
+            "district": "shinshila1",
+            "description": "shinshila1",
+            "userContacts": "Kiev, Nafanya, +3.....111111",
+            "price": "12366",
+            "owner": "62ff62db76172b42dd276f3a",
+            "category": "Sell",
+            "createdAt": "2022-08-21T20:50:38.508Z",
+            "updatedAt": "2022-08-21T20:50:38.508Z",
+            "__v": 0
+          }]
         }
       },
       "NoticeRequest": {
@@ -1217,7 +1271,7 @@
           "message": {
             "type": "string"
           },
-          "serSelectedNotices": {
+          "userSelectedNotices": {
             "type": "array",
             "items": {
               "type": "object",
