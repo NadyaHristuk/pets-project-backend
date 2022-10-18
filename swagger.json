@@ -1188,7 +1188,9 @@
             "type": "string"
           },
           "notice": {
-            "type": "object",
+            "type": "array",
+            "items": {
+              "type": "object",
               "properties": {
                 "_id": {
                   "type": "string"
@@ -1226,7 +1228,7 @@
                 "__v": {
                   "type": "number"
                 }
-              }              
+              }
             }
           }
         },
@@ -1250,7 +1252,7 @@
             "_id": "63029a9e67447e95c6d81cee",
             "type_of_pet": "shinshila1",
             "animals_photos": "https://res.cloudinary.com/nafin13/image/upload/v1661115037/ow7dsa4ifrr7ubnwqtj7.jpg",
-            "district": "shinshila1",
+            "district": "shinshila",
             "description": "shinshila1",
             "userContacts": "Kiev, Nafanya, +3.....111111",
             "price": "12366",
@@ -1271,7 +1273,7 @@
           "message": {
             "type": "string"
           },
-          "userSelectedNotices": {
+          "serSelectedNotices": {
             "type": "array",
             "items": {
               "type": "object",
