@@ -228,7 +228,7 @@
         }
       }
     },
-    "/user/update": {
+    "/users/update": {
       "patch": {
         "tags": [
           "UserAuth"
@@ -350,6 +350,11 @@
           "Notice"
         ],
         "summary": "Get list of categories",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -390,6 +395,11 @@
           "Notice"
         ],
         "summary": "Get list of categories",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "parameters": [],
         "responses": {
           "200": {
@@ -419,6 +429,11 @@
           "Notice"
         ],
         "summary": "Post selected notice",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -468,6 +483,11 @@
           "Notice"
         ],
         "summary": "Delete selected notice",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -508,6 +528,11 @@
           "Pet"
         ],
         "summary": "Post selected notice",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "parameters": [],
         "requestBody": {
           "description": "Notece's object",
@@ -548,6 +573,11 @@
           "Pet"
         ],
         "summary": "Delete selected notice",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
