@@ -618,6 +618,11 @@
           "Notice"
         ],
         "summary": "Get list of categories",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "parameters": [],
         "responses": {
           "200": {
