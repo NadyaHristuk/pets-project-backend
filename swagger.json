@@ -228,7 +228,7 @@
         }
       }
     },
-    "/users/update": {
+    "/user/update": {
       "patch": {
         "tags": [
           "UserAuth"
